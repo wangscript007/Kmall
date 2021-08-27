@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>xyz.klenkiven</groupId>
+    <artifactId>kmall</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>kmall</name>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>kmall-coupon</module>
+        <module>kmall-member</module>
+        <module>kmall-order</module>
+        <module>kmall-product</module>
+        <module>kmall-ware</module>
+    </modules>
+
+    <description>酷商城-聚合服务</description>
+
+</project>
