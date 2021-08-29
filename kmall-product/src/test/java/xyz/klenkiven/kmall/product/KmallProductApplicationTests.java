@@ -23,7 +23,7 @@ class KmallProductApplicationTests {
     void contextLoads() {
         BrandEntity brandEntity = new BrandEntity();
         brandEntity.setName("KlenKiven");
-        brandService.save(brandEntity);
+        // brandService.save(brandEntity);
     }
 
 }
