@@ -8,6 +8,14 @@ spring:
     username: root
     password: root
 
+  # Alibaba Nacos Service Discovery
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:18848
+  application:
+    name: kmall-coupon
+
 #mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
@@ -15,3 +23,4 @@ mybatis-plus:
     db-config:
       # 主键自增策略
       id-type: AUTO
+

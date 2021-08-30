@@ -8,6 +8,14 @@ spring:
     username: root
     password: root
 
+  # Alibaba Nacos Service Discovery
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:18848
+  application:
+    name: kmall-ware
+
 #mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
