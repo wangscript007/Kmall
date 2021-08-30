@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import xyz.klenkiven.kmall.member.entity.MemberEntity;
+import xyz.klenkiven.kmall.member.feign.CouponFeignService;
 import xyz.klenkiven.kmall.member.service.MemberService;
 import xyz.klenkiven.common.utils.PageUtils;
 import xyz.klenkiven.common.utils.R;
@@ -29,6 +30,18 @@ import xyz.klenkiven.common.utils.R;
 public class MemberController {
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private CouponFeignService couponFeignService;
+
+    @RequestMapping("/coupons")
+    public R testOpenFeign() {
+        MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setNickname("KlenKiven");
+
+        R memberCoupons = couponFeignService.memberCoupons();
+        return R.ok().put("member", memberEntity).put("coupons", memberCoupons.get("coupons"));
+    }
 
     /**
      * 列表
