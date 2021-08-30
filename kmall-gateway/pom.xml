@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>kmall</artifactId>
+        <groupId>xyz.klenkiven</groupId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>kmall-gateway</artifactId>
+    <version>1.0</version>
+    <name>kmall-gateway</name>
+    <description>酷商城-Spring网关</description>
+    <properties>
+        <java.version>11</java.version>
+    </properties>
+    <dependencies>
+        <!-- 公共服务 - 服务发现，配置中心 -->
+        <dependency>
+            <groupId>xyz.klenkiven</groupId>
+            <artifactId>kmall-common</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

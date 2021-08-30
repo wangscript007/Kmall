@@ -19,6 +19,7 @@
     <modules>
         <module>kmall-admin</module>
         <module>kmall-coupon</module>
+        <module>kmall-gateway</module>
         <module>kmall-generator</module>
         <module>kmall-member</module>
         <module>kmall-order</module>
