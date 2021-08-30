@@ -27,10 +27,16 @@
             <version>2.5.4</version>
         </dependency>
 
-        <!-- Alibaba Nacos 作为注册中心 -->
+        <!-- Alibaba Nacos 注册中心 -->
+        <!-- 服务发现 (Discovery) -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!-- 配置中心 (Configuration) -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
         <!-- MyBatis Plus以及数据库驱动 -->
