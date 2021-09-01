@@ -16,7 +16,7 @@ spring:
         - id: kmall_admin
           uri: lb://kmall-admin
           predicates:
-            - Path=/api/admin/**
+            - Path=/api/**
           # 路由拦截器，例如访问某个位置
           # http://localhost:88/api/admin/role/list
           #                       | Gateway路由
@@ -24,4 +24,4 @@ spring:
           # http://localhost:7100/api/admin/role/list
           # 上面的访问方式并不能正常访问, 利用下面的过滤器，就可以截取合适的部分发送到指定服务位置
           filters:
-            - RewritePath=/api/admin/(?<segment>.*),/$\{segment}
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
