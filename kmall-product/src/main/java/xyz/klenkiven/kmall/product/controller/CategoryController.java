@@ -1,6 +1,7 @@
 package xyz.klenkiven.kmall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +32,13 @@ public class CategoryController {
     private CategoryService categoryService;
 
     /**
-     * 列表
+     * 查出所有的分类列表，按照三级菜单的形式列出来
      */
-    @RequestMapping("/list")
+    @RequestMapping("/list/tree")
     // @RequiresPermissions("product:category:list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = categoryService.queryPage(params);
-
-        return R.ok().put("page", page);
+    public R listTree(){
+        List<CategoryEntity> entityList = categoryService.listWithTree();
+        return R.ok().put("data", entityList);
     }
 
 
