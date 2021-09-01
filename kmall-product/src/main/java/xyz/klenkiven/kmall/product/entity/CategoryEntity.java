@@ -49,9 +49,9 @@ public class CategoryEntity implements Serializable {
 	private Integer showStatus;
 
 	/**
-	 * 排序
+	 * 排序：默认值是0
 	 */
-	private Integer sort;
+	private Integer sort = 0;
 
 	/**
 	 * 图标地址

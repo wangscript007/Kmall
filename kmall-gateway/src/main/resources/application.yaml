@@ -12,6 +12,14 @@ spring:
           predicates:
             - Query=url,qq
 
+        # 酷商城-商品服务路由
+        - id: kmall_product
+          uri: lb://kmall-product
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
         # 酷商城-后台管理系统：前后端对接规则 /api/**
         - id: kmall_admin
           uri: lb://kmall-admin
