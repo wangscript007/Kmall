@@ -5,11 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import xyz.klenkiven.kmall.product.entity.CategoryEntity;
 import xyz.klenkiven.kmall.product.service.CategoryService;
@@ -76,13 +72,14 @@ public class CategoryController {
     }
 
     /**
-     * 删除
+     * 删除分类列表
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     // @RequiresPermissions("product:category:delete")
     public R delete(@RequestBody Long[] catIds){
-		categoryService.removeByIds(Arrays.asList(catIds));
-
+        // TODO 检测当前分类是否被引用
+		// categoryService.removeByIds(Arrays.asList(catIds));
+        categoryService.removeBatch(catIds);
         return R.ok();
     }
 

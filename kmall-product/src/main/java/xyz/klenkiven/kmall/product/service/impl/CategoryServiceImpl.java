@@ -2,6 +2,7 @@ package xyz.klenkiven.kmall.product.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 // 比较排序
                 .sorted((c1, c2) -> c1.getSort() - c2.getSort())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeBatch(Long[] catIds) {
+        // TODO 检测当前ID是否正在被引用
+        baseMapper.deleteBatchIds(Arrays.asList(catIds));
     }
 
     /**
