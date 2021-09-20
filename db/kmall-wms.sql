@@ -5,6 +5,10 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP DATABASE IF EXISTS `kmall_wms`;
+CREATE DATABASE `kmall_wms`;
+USE `kmall_wms`;
+
 -- ----------------------------
 -- Table structure for undo_log
 -- ----------------------------

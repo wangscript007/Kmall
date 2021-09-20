@@ -5,6 +5,10 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP DATABASE IF EXISTS `kmall_sms`;
+CREATE DATABASE `kmall_sms`;
+USE `kmall_sms`;
+
 -- ----------------------------
 -- Table structure for sms_coupon
 -- ----------------------------

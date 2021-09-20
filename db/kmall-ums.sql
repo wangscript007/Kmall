@@ -5,6 +5,10 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP DATABASE IF EXISTS `kmall_ums`;
+CREATE DATABASE `kmall_ums`;
+USE `kmall_ums`;
+
 -- ----------------------------
 -- Table structure for ums_growth_change_history
 -- ----------------------------

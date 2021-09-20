@@ -5,6 +5,10 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP DATABASE IF EXISTS `kmall_pms`;
+CREATE DATABASE `kmall_pms`;
+USE `kmall_pms`;
+
 -- ----------------------------
 -- Table structure for pms_attr
 -- ----------------------------
