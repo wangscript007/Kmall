@@ -13,6 +13,12 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
+    # Alibaba Cloud OSS
+    alicloud:
+      access-key: LTAI5t8Yi7QZ5qn5cM3t8ASK
+      secret-key: rDacG3qBx2k6vTdPYTKXwGE8OA7K3V
+      oss:
+        endpoint: oss-cn-beijing.aliyuncs.com
   application:
     name: kmall-product
 
