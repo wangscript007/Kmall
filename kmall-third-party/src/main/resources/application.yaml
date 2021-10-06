@@ -1,19 +1,20 @@
 server:
   port: 7700
 
-#spring:
-#  # Alibaba Nacos Service Discovery
-#  cloud:
-#    nacos:
-#      discovery:
-#        server-addr: localhost:8848
-#  application:
-#    name: kmall-third-party
-#
-## Alibaba Cloud OSS
-#alibaba:
-#  cloud:
-#    access-key: LTAI5t8Yi7QZ5qn5cM3t8ASK
-#    secret-key: rDacG3qBx2k6vTdPYTKXwGE8OA7K3V
-#    oss:
-#      endpoint: oss-cn-beijing.aliyuncs.com
+spring:
+  # Alibaba Nacos Service Discovery
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  application:
+    name: kmall-third-party
+
+# Alibaba Cloud OSS
+alibaba:
+  cloud:
+    access-key: LTAI5t8Yi7QZ5qn5cM3t8ASK
+    secret-key: rDacG3qBx2k6vTdPYTKXwGE8OA7K3V
+    oss:
+      endpoint: oss-cn-beijing.aliyuncs.com
+      bucket: klenkiven-kmall

@@ -12,11 +12,21 @@ spring:
           predicates:
             - Query=url,qq
 
-        # 酷商城-商品服务路由
+        # Kmall-Product Service Router
+        # Pattern: /api/product/**
         - id: kmall_product
           uri: lb://kmall-product
           predicates:
             - Path=/api/product/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+        # Kmall-ThirdParty Router
+        # Pattern: /api/third-party/**
+        - id: kmall_third_party
+          uri: lb://kmall-third-party
+          predicates:
+            - Path=/api/third-party/**
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
