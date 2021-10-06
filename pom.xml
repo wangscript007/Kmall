@@ -32,6 +32,7 @@
     <description>酷商城-聚合服务</description>
 
     <properties>
+        <java.version>11</java.version>
         <spring-cloud.version>Hoxton.SR12</spring-cloud.version>
         <alibaba.cloud>2.2.6.RELEASE</alibaba.cloud>
         <alibaba.cloud.commercial>2.2.0.RELEASE</alibaba.cloud.commercial>

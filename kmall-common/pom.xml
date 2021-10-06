@@ -32,12 +32,6 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-        <!-- Alibaba Cloud OSS -->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
-        </dependency>
-
         <!-- MyBatis Plus以及数据库驱动 -->
         <dependency>
             <groupId>com.baomidou</groupId>
