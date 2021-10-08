@@ -1,9 +1,12 @@
 package xyz.klenkiven.kmall.product.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.BindResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +18,7 @@ import xyz.klenkiven.kmall.product.service.BrandService;
 import xyz.klenkiven.common.utils.PageUtils;
 import xyz.klenkiven.common.utils.R;
 
+import javax.validation.Valid;
 
 
 /**
@@ -58,9 +62,17 @@ public class BrandController {
      */
     @RequestMapping("/save")
     // @RequiresPermissions("product:brand:save")
-    public R save(@RequestBody BrandEntity brand){
+    public R save(@Valid @RequestBody BrandEntity brand, BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            Map<String, String> map = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(err -> {
+                String field = err.getField();
+                String message = err.getDefaultMessage();
+                map.put(field, message);
+            });
+            return R.error(400, "Arguments incorrect").put("data", map);
+        }
 		brandService.save(brand);
-
         return R.ok();
     }
 

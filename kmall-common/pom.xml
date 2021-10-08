@@ -44,6 +44,12 @@
             <version>8.0.17</version>
         </dependency>
 
+        <!-- Spring Validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
         <!-- Lombok 工具 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
