@@ -17,7 +17,7 @@ import java.util.Map;
  * @email wzl709@outlook.com
  */
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice()
 public class SystemExceptionHandler {
 
 	/**

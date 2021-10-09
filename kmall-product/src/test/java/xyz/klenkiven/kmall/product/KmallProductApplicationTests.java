@@ -4,10 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import xyz.klenkiven.kmall.product.entity.BrandEntity;
 import xyz.klenkiven.kmall.product.service.BrandService;
 
-import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 
 @SpringBootTest
 class KmallProductApplicationTests {
@@ -20,9 +19,7 @@ class KmallProductApplicationTests {
 
     @Test
     void contextLoads() {
-        BrandEntity brandEntity = new BrandEntity();
-        brandEntity.setName("KlenKiven");
-        // brandService.save(brandEntity);
+        System.out.println(Arrays.toString(applicationContext.getBeanDefinitionNames()));
     }
 
 }

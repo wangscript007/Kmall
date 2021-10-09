@@ -8,7 +8,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * 酷商城-商品服务
  * @author klenkiven
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"xyz.klenkiven.kmall.*"})
 @EnableDiscoveryClient
 public class KmallProductApplication {
 
