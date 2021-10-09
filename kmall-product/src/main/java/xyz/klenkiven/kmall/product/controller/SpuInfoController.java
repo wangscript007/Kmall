@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import xyz.klenkiven.kmall.product.entity.SpuInfoEntity;
 import xyz.klenkiven.kmall.product.service.SpuInfoService;
-import xyz.klenkiven.common.utils.PageUtils;
-import xyz.klenkiven.common.utils.R;
+import xyz.klenkiven.kmall.common.utils.PageUtils;
+import xyz.klenkiven.kmall.common.utils.R;
 
 
 

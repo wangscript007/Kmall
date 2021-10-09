@@ -1,4 +1,4 @@
-package xyz.klenkiven.common.exception;
+package xyz.klenkiven.kmall.common.exception;
 
 /**
  * Kmall Exception Enum

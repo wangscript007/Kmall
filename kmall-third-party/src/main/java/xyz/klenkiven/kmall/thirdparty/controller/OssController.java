@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.klenkiven.common.utils.R;
+import xyz.klenkiven.kmall.common.utils.R;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;

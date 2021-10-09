@@ -5,8 +5,8 @@ import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import xyz.klenkiven.common.utils.PageUtils;
-import xyz.klenkiven.common.utils.Query;
+import xyz.klenkiven.kmall.common.utils.PageUtils;
+import xyz.klenkiven.kmall.common.utils.Query;
 
 import xyz.klenkiven.kmall.coupon.dao.CouponHistoryDao;
 import xyz.klenkiven.kmall.coupon.entity.CouponHistoryEntity;

@@ -1,4 +1,4 @@
-package xyz.klenkiven.common.xss;
+package xyz.klenkiven.kmall.common.xss;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import xyz.klenkiven.kmall.ware.entity.PurchaseDetailEntity;
 import xyz.klenkiven.kmall.ware.service.PurchaseDetailService;
-import xyz.klenkiven.common.utils.PageUtils;
-import xyz.klenkiven.common.utils.R;
+import xyz.klenkiven.kmall.common.utils.PageUtils;
+import xyz.klenkiven.kmall.common.utils.R;
 
 
 

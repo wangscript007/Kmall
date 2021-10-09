@@ -2,7 +2,7 @@ package xyz.klenkiven.kmall.member.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
-import xyz.klenkiven.common.utils.R;
+import xyz.klenkiven.kmall.common.utils.R;
 
 /**
  * 优惠券Feign

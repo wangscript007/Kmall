@@ -1,7 +1,7 @@
 package xyz.klenkiven.kmall.coupon.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import xyz.klenkiven.common.utils.PageUtils;
+import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.coupon.entity.SpuBoundsEntity;
 
 import java.util.Map;

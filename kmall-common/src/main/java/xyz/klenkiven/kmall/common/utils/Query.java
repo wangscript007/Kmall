@@ -1,10 +1,10 @@
-package xyz.klenkiven.common.utils;
+package xyz.klenkiven.kmall.common.utils;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
-import xyz.klenkiven.common.xss.SQLFilter;
+import xyz.klenkiven.kmall.common.xss.SQLFilter;
 
 import java.util.Map;
 

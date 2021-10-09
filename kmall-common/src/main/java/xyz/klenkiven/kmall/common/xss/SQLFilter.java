@@ -1,7 +1,7 @@
-package xyz.klenkiven.common.xss;
+package xyz.klenkiven.kmall.common.xss;
 
 import org.apache.commons.lang.StringUtils;
-import xyz.klenkiven.common.exception.SystemException;
+import xyz.klenkiven.kmall.common.exception.SystemException;
 
 /**
  * SQL过滤

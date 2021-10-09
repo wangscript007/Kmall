@@ -1,7 +1,7 @@
 package xyz.klenkiven.kmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import xyz.klenkiven.common.utils.PageUtils;
+import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.product.entity.CommentReplayEntity;
 
 import java.util.Map;

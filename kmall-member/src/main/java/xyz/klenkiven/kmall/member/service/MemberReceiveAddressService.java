@@ -1,7 +1,7 @@
 package xyz.klenkiven.kmall.member.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import xyz.klenkiven.common.utils.PageUtils;
+import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.member.entity.MemberReceiveAddressEntity;
 
 import java.util.Map;

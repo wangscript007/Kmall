@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import xyz.klenkiven.kmall.member.entity.GrowthChangeHistoryEntity;
 import xyz.klenkiven.kmall.member.service.GrowthChangeHistoryService;
-import xyz.klenkiven.common.utils.PageUtils;
-import xyz.klenkiven.common.utils.R;
+import xyz.klenkiven.kmall.common.utils.PageUtils;
+import xyz.klenkiven.kmall.common.utils.R;
 
 
 

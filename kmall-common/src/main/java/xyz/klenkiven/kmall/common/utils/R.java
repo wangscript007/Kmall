@@ -1,7 +1,7 @@
-package xyz.klenkiven.common.utils;
+package xyz.klenkiven.kmall.common.utils;
 
 import org.apache.http.HttpStatus;
-import xyz.klenkiven.common.exception.ExceptionCodeEnum;
+import xyz.klenkiven.kmall.common.exception.ExceptionCodeEnum;
 
 import java.util.HashMap;
 import java.util.Map;

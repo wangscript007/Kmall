@@ -6,7 +6,7 @@
  * 版权所有，侵权必究！
  */
 
-package xyz.klenkiven.common.exception;
+package xyz.klenkiven.kmall.common.exception;
 
 /**
  * 自定义异常

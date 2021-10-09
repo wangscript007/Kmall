@@ -1,4 +1,4 @@
-package xyz.klenkiven.common.utils;
+package xyz.klenkiven.kmall.common.utils;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
