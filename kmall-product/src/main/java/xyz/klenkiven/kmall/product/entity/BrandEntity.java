@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 import xyz.klenkiven.kmall.common.valid.AddGroup;
+import xyz.klenkiven.kmall.common.valid.ListValue;
 import xyz.klenkiven.kmall.common.valid.UpdateGroup;
 
 import javax.validation.constraints.*;
@@ -38,7 +39,7 @@ public class BrandEntity implements Serializable {
 	 * 品牌名
 	 */
 	@NotBlank(message = "Brand name is not blank",
-			groups = {AddGroup.class, UpdateGroup.class})
+			groups = {AddGroup.class})
 	private String name;
 	/**
 	 * 品牌logo地址
@@ -54,6 +55,7 @@ public class BrandEntity implements Serializable {
 	/**
 	 * 显示状态[0-不显示；1-显示]
 	 */
+	@ListValue(values = {1, 0}, groups = {AddGroup.class, UpdateGroup.class})
 	private Integer showStatus;
 	/**
 	 * 检索首字母
