@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
+import xyz.klenkiven.kmall.common.valid.AddGroup;
+import xyz.klenkiven.kmall.common.valid.UpdateGroup;
 
 import javax.validation.constraints.*;
 
@@ -30,17 +32,20 @@ public class BrandEntity implements Serializable {
 	 */
 	@TableId
 	@JsonSerialize(using = ToStringSerializer.class)
+	@NotNull(groups = {UpdateGroup.class})
 	private Long brandId;
 	/**
 	 * 品牌名
 	 */
-	@NotBlank(message = "Brand name is not blank")
+	@NotBlank(message = "Brand name is not blank",
+			groups = {AddGroup.class, UpdateGroup.class})
 	private String name;
 	/**
 	 * 品牌logo地址
 	 */
-	@NotEmpty
-	@URL(message = "Brand LOGO must be a valid url address.")
+	@NotEmpty(groups = {AddGroup.class})
+	@URL(message = "Brand LOGO must be a valid url address.",
+			groups = {AddGroup.class, UpdateGroup.class})
 	private String logo;
 	/**
 	 * 介绍
@@ -53,14 +58,16 @@ public class BrandEntity implements Serializable {
 	/**
 	 * 检索首字母
 	 */
-	@NotEmpty
-	@Pattern(regexp = "^[a-zA-Z]$", message = "firstLetter must be a letter from a(A) to z(Z).")
+	@NotEmpty(groups = {AddGroup.class})
+	@Pattern(regexp = "^[a-zA-Z]$", message = "firstLetter must be a letter from a(A) to z(Z).",
+			groups = {AddGroup.class, UpdateGroup.class})
 	private String firstLetter;
 	/**
 	 * 排序
 	 */
-	@NotNull
-	@Min(value = 0, message = "Sort number must be greater than or equal 0")
+	@NotNull(groups = {AddGroup.class})
+	@Min(value = 0, message = "Sort number must be greater than or equal 0",
+			groups = {AddGroup.class, UpdateGroup.class})
 	private Integer sort;
 
 }
