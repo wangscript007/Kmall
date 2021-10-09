@@ -1,19 +1,19 @@
 package xyz.klenkiven.common.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import xyz.klenkiven.common.utils.R;
 
 /**
- * 异常处理器
+ * Kmall Exception Handler
  *
- * @author Mark sunlightcs@gmail.com
+ * @author klenkiven
+ * @email wzl709@outlook.com
  */
+@Slf4j
 @RestControllerAdvice
 public class SystemExceptionHandler {
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * 处理自定义异常
@@ -29,7 +29,7 @@ public class SystemExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public R handleException(Exception e){
-		logger.error(e.getMessage(), e);
+		log.error(e.getMessage(), e);
 		return R.error();
 	}
 }
