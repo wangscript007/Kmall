@@ -16,5 +16,11 @@ import java.util.Map;
 public interface AttrGroupService extends IService<AttrGroupEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * Paging data by catalogId
+     * <p>If catalogId is 0, return all the data</p>
+     */
+    PageUtils queryPage(Map<String, Object> params, Long catalogId);
 }
 

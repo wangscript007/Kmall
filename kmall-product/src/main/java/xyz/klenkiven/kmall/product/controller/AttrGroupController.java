@@ -1,21 +1,16 @@
 package xyz.klenkiven.kmall.product.controller;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import xyz.klenkiven.kmall.product.entity.AttrGroupEntity;
 import xyz.klenkiven.kmall.product.service.AttrGroupService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
-
-
 
 /**
  * 属性分组
@@ -33,7 +28,7 @@ public class AttrGroupController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @GetMapping("/list")
     // @RequiresPermissions("product:attrgroup:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = attrGroupService.queryPage(params);
@@ -41,11 +36,20 @@ public class AttrGroupController {
         return R.ok().put("page", page);
     }
 
+    /**
+     * Get page by category ID
+     */
+    @GetMapping("list/{catalogId}")
+    public R listCatId(@RequestParam Map<String, Object> params,
+                       @PathVariable("catalogId") Long catalogId) {
+        PageUtils page = attrGroupService.queryPage(params, catalogId);
+        return R.ok().put("page", page);
+    }
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{attrGroupId}")
+    @GetMapping("/info/{attrGroupId}")
     // @RequiresPermissions("product:attrgroup:info")
     public R info(@PathVariable("attrGroupId") Long attrGroupId){
 		AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
