@@ -1,11 +1,16 @@
 package xyz.klenkiven.kmall.product.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 属性分组
@@ -45,4 +50,9 @@ public class AttrGroupEntity implements Serializable {
 	 */
 	private Long catelogId;
 
+	/**
+	 * Catalog Path
+	 */
+	@TableField(exist = false)
+	private List<Long> catalogPath;
 }

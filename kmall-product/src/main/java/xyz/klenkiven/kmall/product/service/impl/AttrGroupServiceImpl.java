@@ -1,7 +1,12 @@
 package xyz.klenkiven.kmall.product.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -11,17 +16,22 @@ import xyz.klenkiven.kmall.common.utils.Query;
 
 import xyz.klenkiven.kmall.product.dao.AttrGroupDao;
 import xyz.klenkiven.kmall.product.entity.AttrGroupEntity;
+import xyz.klenkiven.kmall.product.entity.CategoryEntity;
 import xyz.klenkiven.kmall.product.service.AttrGroupService;
+import xyz.klenkiven.kmall.product.service.CategoryService;
 
 
 @Service("attrGroupService")
+@RequiredArgsConstructor
 public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEntity> implements AttrGroupService {
+
+    private final CategoryService categoryService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<AttrGroupEntity> page = this.page(
                 new Query<AttrGroupEntity>().getPage(params),
-                new QueryWrapper<AttrGroupEntity>()
+                new QueryWrapper<>()
         );
 
         return new PageUtils(page);
@@ -42,6 +52,32 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         }
         resultPage = this.page(paramPage, queryWrapper);
         return new PageUtils(resultPage);
+    }
+
+    @Override
+    public AttrGroupEntity getByIdWithCatPath(Long attrGroupId) {
+        AttrGroupEntity entityById = this.getById(attrGroupId);
+        entityById.setCatalogPath(getCatalogPath(entityById.getCatelogId()));
+        return entityById;
+    }
+
+    /**
+     * Get Catalog Path by Iterating
+     * @param catalogId target catalog
+     * @return catalog path list
+     */
+    private List<Long> getCatalogPath(Long catalogId) {
+        List<Long> result = new ArrayList<>();
+        CategoryEntity catalog;
+        do {
+            catalog = categoryService.getById(catalogId);
+            if (catalog != null) {
+                result.add(catalog.getCatId());
+                catalogId = catalog.getParentCid();
+            }
+        } while (catalogId != 0);
+        Collections.reverse(result);
+        return result;
     }
 
 }

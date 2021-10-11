@@ -39,7 +39,7 @@ public class AttrGroupController {
     /**
      * Get page by category ID
      */
-    @GetMapping("list/{catalogId}")
+    @GetMapping("/list/{catalogId}")
     public R listCatId(@RequestParam Map<String, Object> params,
                        @PathVariable("catalogId") Long catalogId) {
         PageUtils page = attrGroupService.queryPage(params, catalogId);
@@ -52,7 +52,7 @@ public class AttrGroupController {
     @GetMapping("/info/{attrGroupId}")
     // @RequiresPermissions("product:attrgroup:info")
     public R info(@PathVariable("attrGroupId") Long attrGroupId){
-		AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
+		AttrGroupEntity attrGroup = attrGroupService.getByIdWithCatPath(attrGroupId);
 
         return R.ok().put("attrGroup", attrGroup);
     }

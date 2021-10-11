@@ -22,5 +22,10 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
      * <p>If catalogId is 0, return all the data</p>
      */
     PageUtils queryPage(Map<String, Object> params, Long catalogId);
+
+    /**
+     * Get Certain AttrGroup By ID with CatalogPath
+     */
+    AttrGroupEntity getByIdWithCatPath(Long attrGroupId);
 }
 
