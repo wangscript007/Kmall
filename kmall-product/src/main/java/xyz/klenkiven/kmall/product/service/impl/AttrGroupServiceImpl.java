@@ -1,13 +1,11 @@
 package xyz.klenkiven.kmall.product.service.impl;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mysql.cj.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,7 +22,6 @@ import xyz.klenkiven.kmall.product.dao.AttrGroupDao;
 import xyz.klenkiven.kmall.product.entity.AttrAttrgroupRelationEntity;
 import xyz.klenkiven.kmall.product.entity.AttrEntity;
 import xyz.klenkiven.kmall.product.entity.AttrGroupEntity;
-import xyz.klenkiven.kmall.product.entity.CategoryEntity;
 import xyz.klenkiven.kmall.product.service.AttrGroupService;
 import xyz.klenkiven.kmall.product.service.CategoryService;
 import xyz.klenkiven.kmall.product.vo.AttrRelationVO;
@@ -82,14 +79,22 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
                 new QueryWrapper<AttrAttrgroupRelationEntity>()
                         .eq("attr_group_id", attrGroupId)
         );
-        return relationEntities.stream()
-                .map((item) -> {
-                    AttrVO attrVO = new AttrVO();
-                    AttrEntity attrEntity = attrDao.selectById(item.getAttrId());
-                    BeanUtils.copyProperties(attrEntity, attrVO);
-                    return attrVO;
-                })
+        List<Long> attrIdList = relationEntities.stream()
+                .map(AttrAttrgroupRelationEntity::getAttrId)
                 .collect(Collectors.toList());
+        List<AttrVO> result = new ArrayList<>();
+
+        if (attrIdList.size() != 0) {
+            result = attrDao.selectList(
+                    new QueryWrapper<AttrEntity>()
+                    .in("attr_id", attrIdList)
+            ).stream().map((item) -> {
+                AttrVO attrVO = new AttrVO();
+                BeanUtils.copyProperties(item, attrVO);
+                return attrVO;
+            }).collect(Collectors.toList());
+        }
+        return result;
     }
 
     @Override
