@@ -16,5 +16,11 @@ import java.util.Map;
 public interface CategoryBrandRelationService extends IService<CategoryBrandRelationEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * Save Redundant Data brand name and category name
+     * @param categoryBrandRelation entity with brand and category id
+     */
+    void saveDetail(CategoryBrandRelationEntity categoryBrandRelation);
 }
 
