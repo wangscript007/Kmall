@@ -1,6 +1,7 @@
 package xyz.klenkiven.kmall.product.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mysql.cj.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,11 +45,14 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         QueryWrapper<AttrGroupEntity> queryWrapper = new QueryWrapper<>();
         if (catalogId != 0) {
             queryWrapper.eq("catelog_id", catalogId);
-            queryWrapper.and((condition) -> {
-                condition.eq("attr_group_id", params.get("key"));
-                condition.or();
-                condition.like("attr_group_name", "%" + params.get("key") + "%");
-            });
+            String key = (String) params.get("key");
+            if (!StringUtils.isNullOrEmpty(key)) {
+                queryWrapper.and((condition) -> {
+                    condition.eq("attr_group_id", key);
+                    condition.or();
+                    condition.like("attr_group_name", "%" + key + "%");
+                });
+            }
         }
         resultPage = this.page(paramPage, queryWrapper);
         return new PageUtils(resultPage);
