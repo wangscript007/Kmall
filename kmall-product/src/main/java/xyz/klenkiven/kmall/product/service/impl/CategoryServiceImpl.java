@@ -66,6 +66,20 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         this.updateById(category);
     }
 
+    public List<Long> getCatalogPath(Long catalogId) {
+        List<Long> result = new ArrayList<>();
+        CategoryEntity catalog;
+        do {
+            catalog = this.getById(catalogId);
+            if (catalog != null) {
+                result.add(catalog.getCatId());
+                catalogId = catalog.getParentCid();
+            }
+        } while (catalogId != 0);
+        Collections.reverse(result);
+        return result;
+    }
+
     /**
      * 获取此分类下的所有子分类，以及递归子分类
      * @param parent 父分类

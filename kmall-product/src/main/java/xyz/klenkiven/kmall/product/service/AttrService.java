@@ -3,6 +3,7 @@ package xyz.klenkiven.kmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.product.entity.AttrEntity;
+import xyz.klenkiven.kmall.product.vo.AttrRespVO;
 import xyz.klenkiven.kmall.product.vo.AttrVO;
 
 import java.util.Map;
@@ -31,5 +32,18 @@ public interface AttrService extends IService<AttrEntity> {
      * @return Page
      */
     PageUtils queryBasePage(Long catalogId, Map<String, Object> params);
+
+    /**
+     * Get detail by ID
+     * @param attrId attribute ID
+     * @return Response VO
+     */
+    AttrRespVO getDetailById(Long attrId);
+
+    /**
+     * Update Attribute VO
+     * @param attr attrVo
+     */
+    void updateVO(AttrVO attr);
 }
 

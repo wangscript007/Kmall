@@ -61,27 +61,8 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     @Override
     public AttrGroupEntity getByIdWithCatPath(Long attrGroupId) {
         AttrGroupEntity entityById = this.getById(attrGroupId);
-        entityById.setCatalogPath(getCatalogPath(entityById.getCatelogId()));
+        entityById.setCatalogPath(categoryService.getCatalogPath(entityById.getCatelogId()));
         return entityById;
-    }
-
-    /**
-     * Get Catalog Path by Iterating
-     * @param catalogId target catalog
-     * @return catalog path list
-     */
-    private List<Long> getCatalogPath(Long catalogId) {
-        List<Long> result = new ArrayList<>();
-        CategoryEntity catalog;
-        do {
-            catalog = categoryService.getById(catalogId);
-            if (catalog != null) {
-                result.add(catalog.getCatId());
-                catalogId = catalog.getParentCid();
-            }
-        } while (catalogId != 0);
-        Collections.reverse(result);
-        return result;
     }
 
 }

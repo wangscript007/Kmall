@@ -42,5 +42,12 @@ public interface CategoryService extends IService<CategoryEntity> {
      * @param category category
      */
     void updateDetailById(CategoryEntity category);
+
+    /**
+     * Get Catalog Path by Iterating
+     * @param catalogId target catalog
+     * @return catalog path list
+     */
+    List<Long> getCatalogPath(Long catalogId);
 }
 

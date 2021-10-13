@@ -10,6 +10,7 @@ import xyz.klenkiven.kmall.product.entity.AttrEntity;
 import xyz.klenkiven.kmall.product.service.AttrService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
+import xyz.klenkiven.kmall.product.vo.AttrRespVO;
 import xyz.klenkiven.kmall.product.vo.AttrVO;
 
 
@@ -54,7 +55,7 @@ public class AttrController {
     @RequestMapping("/info/{attrId}")
     // @RequiresPermissions("product:attr:info")
     public R info(@PathVariable("attrId") Long attrId){
-		AttrEntity attr = attrService.getById(attrId);
+		AttrRespVO attr = attrService.getDetailById(attrId);
 
         return R.ok().put("attr", attr);
     }
@@ -75,8 +76,8 @@ public class AttrController {
      */
     @RequestMapping("/update")
     // @RequiresPermissions("product:attr:update")
-    public R update(@RequestBody AttrEntity attr){
-		attrService.updateById(attr);
+    public R update(@RequestBody AttrVO attr){
+		attrService.updateVO(attr);
 
         return R.ok();
     }
