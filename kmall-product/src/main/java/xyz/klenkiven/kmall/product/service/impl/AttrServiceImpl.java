@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +14,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
+import xyz.klenkiven.kmall.common.constant.ProductConstant;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.Query;
 
@@ -59,6 +59,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         // After saving data, mbp will complete entity automatically.
         this.save(attrEntity);
 
+        if (ProductConstant.AttrType.ATTR_TYPE_SALE.getCode().equals(attrEntity.getAttrType())) {
+            return;
+        }
         // Save Relation
         AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
         relationEntity.setAttrId(attrEntity.getAttrId());
@@ -68,9 +71,14 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public PageUtils queryBasePage(Long catalogId, Map<String, Object> params) {
+    public PageUtils queryBasePage(Long catalogId, Map<String, Object> params, String attrType) {
         IPage<AttrEntity> page = new Query<AttrEntity>().getPage(params);
         QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("attr_type",
+                "base".equals(attrType)?
+                        ProductConstant.AttrType.ATTR_TYPE_BASE.getCode():
+                        ProductConstant.AttrType.ATTR_TYPE_SALE.getCode()
+        );
         if (catalogId != 0) {
             queryWrapper.eq("catelog_id", catalogId);
         }
@@ -92,14 +100,16 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
                     AttrRespVO vo = new AttrRespVO();
                     BeanUtils.copyProperties(record, vo);
 
-                    // SET Attribute Group Name
-                    AttrAttrgroupRelationEntity relationEntity = attrAttrgroupRelationDao.selectOne(
-                            new QueryWrapper<AttrAttrgroupRelationEntity>()
-                                    .eq("attr_id", record.getAttrId())
-                    );
-                    AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(relationEntity.getAttrGroupId());
-                    if (attrGroupEntity != null) {
-                        vo.setGroupName(attrGroupEntity.getAttrGroupName());
+                    if ("base".equals(attrType)) {
+                        // SET Attribute Group Name
+                        AttrAttrgroupRelationEntity relationEntity = attrAttrgroupRelationDao.selectOne(
+                                new QueryWrapper<AttrAttrgroupRelationEntity>()
+                                        .eq("attr_id", record.getAttrId())
+                        );
+                        AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(relationEntity.getAttrGroupId());
+                        if (attrGroupEntity != null) {
+                            vo.setGroupName(attrGroupEntity.getAttrGroupName());
+                        }
                     }
 
                     // SET Catalog Name
@@ -122,14 +132,17 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         AttrEntity byId = this.getById(attrId);
         BeanUtils.copyProperties(byId, respVO);
 
-        // SET Attribute ID
-        AttrAttrgroupRelationEntity relationEntity = attrAttrgroupRelationDao.selectOne(
-                new QueryWrapper<AttrAttrgroupRelationEntity>()
-                        .eq("attr_id", attrId)
-        );
-        if (relationEntity != null) {
-            respVO.setAttrGroupId(relationEntity.getAttrGroupId());
+        if (ProductConstant.AttrType.ATTR_TYPE_BASE.getCode().equals(byId.getAttrType())) {
+            // SET Attribute ID
+            AttrAttrgroupRelationEntity relationEntity = attrAttrgroupRelationDao.selectOne(
+                    new QueryWrapper<AttrAttrgroupRelationEntity>()
+                            .eq("attr_id", attrId)
+            );
+            if (relationEntity != null) {
+                respVO.setAttrGroupId(relationEntity.getAttrGroupId());
+            }
         }
+
         // SET Category Path
         respVO.setCatelogPath(categoryService.getCatalogPath(respVO.getCatelogId()));
 
@@ -143,6 +156,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         // After saving data, mbp will complete entity automatically.
         this.updateById(attrEntity);
 
+        if (ProductConstant.AttrType.ATTR_TYPE_SALE.getCode().equals(attrEntity.getAttrType())) {
+            return;
+        }
         // Save Relation
         AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
         relationEntity.setAttrId(attrEntity.getAttrId());
