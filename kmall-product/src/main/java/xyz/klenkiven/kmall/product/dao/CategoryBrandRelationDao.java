@@ -1,5 +1,6 @@
 package xyz.klenkiven.kmall.product.dao;
 
+import org.apache.ibatis.annotations.Param;
 import xyz.klenkiven.kmall.product.entity.CategoryBrandRelationEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,5 +14,11 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface CategoryBrandRelationDao extends BaseMapper<CategoryBrandRelationEntity> {
-	
+
+    /**
+     * Update Brand
+     * @param brandId brand id
+     * @param name brand name
+     */
+    void updateBrand(@Param("brandId") Long brandId, @Param("name") String name);
 }

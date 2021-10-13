@@ -1,6 +1,7 @@
 package xyz.klenkiven.kmall.product.service.impl;
 
 import com.mysql.cj.util.StringUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,10 +13,14 @@ import xyz.klenkiven.kmall.common.utils.Query;
 import xyz.klenkiven.kmall.product.dao.BrandDao;
 import xyz.klenkiven.kmall.product.entity.BrandEntity;
 import xyz.klenkiven.kmall.product.service.BrandService;
+import xyz.klenkiven.kmall.product.service.CategoryBrandRelationService;
 
 
 @Service("brandService")
+@RequiredArgsConstructor
 public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> implements BrandService {
+
+    private final CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -32,6 +37,15 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
 
         resultPage = this.page(paramPage, queryWrapper);
         return new PageUtils(resultPage);
+    }
+
+    @Override
+    public void updateDetailById(BrandEntity brand) {
+        if (!StringUtils.isNullOrEmpty(brand.getName())) {
+            categoryBrandRelationService.updateBrand(brand.getBrandId(), brand.getName());
+            // TODO Other Relation
+        }
+        this.updateById(brand);
     }
 
 }

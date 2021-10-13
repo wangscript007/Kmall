@@ -1,7 +1,9 @@
 package xyz.klenkiven.kmall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -42,6 +44,20 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         categoryBrandRelation.setBrandName(brand.getName());
         categoryBrandRelation.setCatelogName(category.getName());
         this.save(categoryBrandRelation);
+    }
+
+    @Override
+    public void updateCategory(Long catId, String name) {
+        CategoryBrandRelationEntity categoryBrandRelation = new CategoryBrandRelationEntity();
+        categoryBrandRelation.setCatelogId(catId);
+        categoryBrandRelation.setCatelogName(name);
+        this.update(categoryBrandRelation,
+                new UpdateWrapper<CategoryBrandRelationEntity>().eq("catelog_id", catId));
+    }
+
+    @Override
+    public void updateBrand(Long brandId, String name) {
+        baseMapper.updateBrand(brandId, name);
     }
 
 }

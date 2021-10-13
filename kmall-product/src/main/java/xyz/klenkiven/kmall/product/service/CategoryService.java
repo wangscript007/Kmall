@@ -34,5 +34,13 @@ public interface CategoryService extends IService<CategoryEntity> {
      * @param catIds 分类ID数组
      */
     void removeBatch(Long[] catIds);
+
+    /**
+     * Update Cascade when name is changed
+     * <p>Because of Category and Brand has a relation table and it has
+     * redundant data which is their name.</p>
+     * @param category category
+     */
+    void updateDetailById(CategoryEntity category);
 }
 

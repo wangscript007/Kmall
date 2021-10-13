@@ -1,11 +1,10 @@
 package xyz.klenkiven.kmall.product.service.impl;
 
+import com.mysql.cj.util.StringUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -14,13 +13,19 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.Query;
 
+import xyz.klenkiven.kmall.product.dao.CategoryBrandRelationDao;
 import xyz.klenkiven.kmall.product.dao.CategoryDao;
+import xyz.klenkiven.kmall.product.entity.CategoryBrandRelationEntity;
 import xyz.klenkiven.kmall.product.entity.CategoryEntity;
+import xyz.klenkiven.kmall.product.service.CategoryBrandRelationService;
 import xyz.klenkiven.kmall.product.service.CategoryService;
 
 
 @Service("categoryService")
+@RequiredArgsConstructor
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    private final CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -48,7 +53,17 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Override
     public void removeBatch(Long[] catIds) {
         // TODO 检测当前ID是否正在被引用
-        baseMapper.deleteBatchIds(Arrays.asList(catIds));
+        List<Long> catIdList = new ArrayList<>(Arrays.asList(catIds));
+        baseMapper.deleteBatchIds(catIdList);
+    }
+
+    @Override
+    public void updateDetailById(CategoryEntity category) {
+        if (!StringUtils.isNullOrEmpty(category.getName())) {
+            categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
+            // TODO Other relationship
+        }
+        this.updateById(category);
     }
 
     /**

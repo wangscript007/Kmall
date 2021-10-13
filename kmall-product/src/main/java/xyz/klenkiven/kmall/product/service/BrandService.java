@@ -16,5 +16,11 @@ import java.util.Map;
 public interface BrandService extends IService<BrandEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * When brand name is changed, then update relation cascade
+     * @param brand brand
+     */
+    void updateDetailById(BrandEntity brand);
 }
 
