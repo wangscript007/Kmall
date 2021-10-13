@@ -14,7 +14,7 @@ import xyz.klenkiven.kmall.product.entity.AttrEntity;
 import xyz.klenkiven.kmall.product.service.AttrService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
-
+import xyz.klenkiven.kmall.product.vo.AttrVO;
 
 
 /**
@@ -58,8 +58,8 @@ public class AttrController {
      */
     @RequestMapping("/save")
     // @RequiresPermissions("product:attr:save")
-    public R save(@RequestBody AttrEntity attr){
-		attrService.save(attr);
+    public R save(@RequestBody AttrVO attr){
+		attrService.saveVO(attr);
 
         return R.ok();
     }
