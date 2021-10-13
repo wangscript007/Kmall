@@ -3,7 +3,10 @@ package xyz.klenkiven.kmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.product.entity.AttrGroupEntity;
+import xyz.klenkiven.kmall.product.vo.AttrRelationVO;
+import xyz.klenkiven.kmall.product.vo.AttrVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,5 +30,15 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
      * Get Certain AttrGroup By ID with CatalogPath
      */
     AttrGroupEntity getByIdWithCatPath(Long attrGroupId);
+
+    /**
+     * Get all attribute which in certain attribute group
+     */
+    List<AttrVO> listAllAttrRelation(String attrGroupId);
+
+    /**
+     * Remove Attribute relationship in batch
+     */
+    void removeBatchAttrRelation(List<AttrRelationVO> attrRelationList);
 }
 

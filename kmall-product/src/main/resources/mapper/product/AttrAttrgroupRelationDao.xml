@@ -11,5 +11,12 @@
         <result property="attrSort" column="attr_sort"/>
     </resultMap>
 
-
+    <!-- Remove Attribute relationship in batch -->
+    <delete id="deleteBatchAttrRelation">
+        delete from kmall_pms.pms_attr_attrgroup_relation
+        where
+            <foreach collection="attrRelationList" item="item" separator=" or ">
+                (attr_id = #{item.attrId} AND attr_group_id = #{item.attrGroupId})
+            </foreach>
+    </delete>
 </mapper>

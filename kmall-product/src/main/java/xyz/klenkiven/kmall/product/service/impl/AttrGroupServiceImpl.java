@@ -3,23 +3,32 @@ package xyz.klenkiven.kmall.product.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mysql.cj.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.Query;
 
+import xyz.klenkiven.kmall.product.dao.AttrAttrgroupRelationDao;
+import xyz.klenkiven.kmall.product.dao.AttrDao;
 import xyz.klenkiven.kmall.product.dao.AttrGroupDao;
+import xyz.klenkiven.kmall.product.entity.AttrAttrgroupRelationEntity;
+import xyz.klenkiven.kmall.product.entity.AttrEntity;
 import xyz.klenkiven.kmall.product.entity.AttrGroupEntity;
 import xyz.klenkiven.kmall.product.entity.CategoryEntity;
 import xyz.klenkiven.kmall.product.service.AttrGroupService;
 import xyz.klenkiven.kmall.product.service.CategoryService;
+import xyz.klenkiven.kmall.product.vo.AttrRelationVO;
+import xyz.klenkiven.kmall.product.vo.AttrVO;
 
 
 @Service("attrGroupService")
@@ -27,6 +36,8 @@ import xyz.klenkiven.kmall.product.service.CategoryService;
 public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEntity> implements AttrGroupService {
 
     private final CategoryService categoryService;
+    private final AttrAttrgroupRelationDao relationDao;
+    private final AttrDao attrDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -63,6 +74,27 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         AttrGroupEntity entityById = this.getById(attrGroupId);
         entityById.setCatalogPath(categoryService.getCatalogPath(entityById.getCatelogId()));
         return entityById;
+    }
+
+    @Override
+    public List<AttrVO> listAllAttrRelation(String attrGroupId) {
+        List<AttrAttrgroupRelationEntity> relationEntities = relationDao.selectList(
+                new QueryWrapper<AttrAttrgroupRelationEntity>()
+                        .eq("attr_group_id", attrGroupId)
+        );
+        return relationEntities.stream()
+                .map((item) -> {
+                    AttrVO attrVO = new AttrVO();
+                    AttrEntity attrEntity = attrDao.selectById(item.getAttrId());
+                    BeanUtils.copyProperties(attrEntity, attrVO);
+                    return attrVO;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeBatchAttrRelation(List<AttrRelationVO> attrRelationList) {
+        relationDao.deleteBatchAttrRelation(attrRelationList);
     }
 
 }

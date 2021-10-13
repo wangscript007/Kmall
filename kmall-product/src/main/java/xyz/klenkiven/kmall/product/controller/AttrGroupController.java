@@ -2,6 +2,7 @@ package xyz.klenkiven.kmall.product.controller;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import xyz.klenkiven.kmall.product.entity.AttrGroupEntity;
 import xyz.klenkiven.kmall.product.service.AttrGroupService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
+import xyz.klenkiven.kmall.product.vo.AttrRelationVO;
+import xyz.klenkiven.kmall.product.vo.AttrVO;
 
 /**
  * 属性分组
@@ -55,6 +58,23 @@ public class AttrGroupController {
 		AttrGroupEntity attrGroup = attrGroupService.getByIdWithCatPath(attrGroupId);
 
         return R.ok().put("attrGroup", attrGroup);
+    }
+
+    /**
+     * 获取指定分组关联的所有属性
+     */
+    @GetMapping("/{attrGroupId}/attr/relation")
+    public R attrRelation(@PathVariable String attrGroupId) {
+        List<AttrVO> result = attrGroupService.listAllAttrRelation(attrGroupId);
+
+        return R.ok().put("data", result);
+    }
+
+    @PostMapping("/attr/relation/delete")
+    public R attrRelationDelete(@RequestBody List<AttrRelationVO> attrRelationList) {
+        attrGroupService.removeBatchAttrRelation(attrRelationList);
+
+        return R.ok();
     }
 
     /**

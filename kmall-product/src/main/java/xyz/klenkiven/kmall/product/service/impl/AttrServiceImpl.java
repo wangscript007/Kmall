@@ -106,9 +106,11 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
                                 new QueryWrapper<AttrAttrgroupRelationEntity>()
                                         .eq("attr_id", record.getAttrId())
                         );
-                        AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(relationEntity.getAttrGroupId());
-                        if (attrGroupEntity != null) {
-                            vo.setGroupName(attrGroupEntity.getAttrGroupName());
+                        if (relationEntity != null) {
+                            AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(relationEntity.getAttrGroupId());
+                            if (attrGroupEntity != null) {
+                                vo.setGroupName(attrGroupEntity.getAttrGroupName());
+                            }
                         }
                     }
 
