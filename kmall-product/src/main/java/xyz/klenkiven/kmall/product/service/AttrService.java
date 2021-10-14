@@ -46,5 +46,10 @@ public interface AttrService extends IService<AttrEntity> {
      * @param attr attrVo
      */
     void updateVO(AttrVO attr);
+
+    /**
+     * Page Attribute(Base Type) that not relate with Attribute Group
+     */
+    PageUtils pageAttrNoRelation(Map<String, Object> params, Long attrGroupId);
 }
 

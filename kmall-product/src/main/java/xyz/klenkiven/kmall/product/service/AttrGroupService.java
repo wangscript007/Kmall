@@ -40,5 +40,10 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
      * Remove Attribute relationship in batch
      */
     void removeBatchAttrRelation(List<AttrRelationVO> attrRelationList);
+
+    /**
+     * Remove Attribute relationship in batch
+     */
+    void saveBatchAttrRelation(List<AttrRelationVO> attrRelationList);
 }
 

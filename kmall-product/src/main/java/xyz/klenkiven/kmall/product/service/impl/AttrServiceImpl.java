@@ -1,6 +1,7 @@
 package xyz.klenkiven.kmall.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -46,7 +47,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<AttrEntity> page = this.page(
                 new Query<AttrEntity>().getPage(params),
-                new QueryWrapper<AttrEntity>()
+                new QueryWrapper<>()
         );
 
         return new PageUtils(page);
@@ -59,7 +60,8 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         // After saving data, mbp will complete entity automatically.
         this.save(attrEntity);
 
-        if (ProductConstant.AttrType.ATTR_TYPE_SALE.getCode().equals(attrEntity.getAttrType())) {
+        if (ProductConstant.AttrType.ATTR_TYPE_SALE.getCode().equals(attrEntity.getAttrType()) ||
+            attr.getAttrGroupId() == null) {
             return;
         }
         // Save Relation
@@ -152,6 +154,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class})
     public void updateVO(AttrVO attr) {
         AttrEntity attrEntity = new AttrEntity();
         BeanUtils.copyProperties(attr, attrEntity);
@@ -178,6 +181,24 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         } else {
             attrAttrgroupRelationDao.insert(relationEntity);
         }
+    }
+
+    @Override
+    public PageUtils pageAttrNoRelation(Map<String, Object> params, Long attrGroupId) {
+        AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrGroupId);
+        Long catalogId = attrGroupEntity.getCatelogId();
+        List<Long> exceptAttrIdList=
+                attrAttrgroupRelationDao.selectList(new QueryWrapper<>()).stream()
+                        .map(AttrAttrgroupRelationEntity::getAttrId)
+                        .collect(Collectors.toList());
+        Page<AttrEntity> page = this.page(
+                new Page<>(),
+                new QueryWrapper<AttrEntity>()
+                        .eq("catelog_id", catalogId)
+                        .eq("attr_type", ProductConstant.AttrType.ATTR_TYPE_BASE.getCode())
+                        .notIn(exceptAttrIdList.size() != 0, "attr_id", exceptAttrIdList)
+        );
+        return new PageUtils(page);
     }
 
 }

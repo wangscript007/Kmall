@@ -3,6 +3,7 @@ package xyz.klenkiven.kmall.product.service.impl;
 import com.mysql.cj.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -100,6 +101,17 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     @Override
     public void removeBatchAttrRelation(List<AttrRelationVO> attrRelationList) {
         relationDao.deleteBatchAttrRelation(attrRelationList);
+    }
+
+    @Override
+    public void saveBatchAttrRelation(List<AttrRelationVO> attrRelationList) {
+        attrRelationList.stream()
+                .map((item) -> {
+                    AttrAttrgroupRelationEntity relation = new AttrAttrgroupRelationEntity();
+                    BeanUtils.copyProperties(item, relation);
+                    return relation;
+                })
+                .forEach(relationDao::insert);
     }
 
 }

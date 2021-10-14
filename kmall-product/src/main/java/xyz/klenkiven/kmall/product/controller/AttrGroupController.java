@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import xyz.klenkiven.kmall.product.entity.AttrGroupEntity;
 import xyz.klenkiven.kmall.product.service.AttrGroupService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
+import xyz.klenkiven.kmall.product.service.AttrService;
 import xyz.klenkiven.kmall.product.vo.AttrRelationVO;
 import xyz.klenkiven.kmall.product.vo.AttrVO;
 
@@ -24,9 +26,11 @@ import xyz.klenkiven.kmall.product.vo.AttrVO;
  */
 @RestController
 @RequestMapping("product/attrgroup")
+@RequiredArgsConstructor
 public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;
+    private final AttrService attrService;
 
     /**
      * 列表
@@ -66,15 +70,37 @@ public class AttrGroupController {
     @GetMapping("/{attrGroupId}/attr/relation")
     public R attrRelation(@PathVariable String attrGroupId) {
         List<AttrVO> result = attrGroupService.listAllAttrRelation(attrGroupId);
-
         return R.ok().put("data", result);
     }
 
+    /**
+     * 添加属性与分组关联关系
+     */
+    @PostMapping("/attr/relation")
+    public R attrRelationSave(@RequestBody List<AttrRelationVO> attrRelationList) {
+        attrGroupService.saveBatchAttrRelation(attrRelationList);
+
+        return R.ok();
+    }
+
+    /**
+     * 删除属性与分组的关联关系
+     */
     @PostMapping("/attr/relation/delete")
     public R attrRelationDelete(@RequestBody List<AttrRelationVO> attrRelationList) {
         attrGroupService.removeBatchAttrRelation(attrRelationList);
 
         return R.ok();
+    }
+
+    /**
+     * 获取属性分组没有关联的其他属性
+     */
+    @GetMapping("/{attrGroupId}/noattr/relation")
+    public R attrNoRelation(@RequestParam Map<String, Object> params,
+                            @PathVariable Long attrGroupId) {
+        PageUtils page = attrService.pageAttrNoRelation(params, attrGroupId);
+        return R.ok().put("page", page);
     }
 
     /**
