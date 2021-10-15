@@ -12,7 +12,7 @@ import xyz.klenkiven.kmall.product.entity.CategoryBrandRelationEntity;
 import xyz.klenkiven.kmall.product.service.CategoryBrandRelationService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
-
+import xyz.klenkiven.kmall.product.vo.BrandRespVO;
 
 
 /**
@@ -47,6 +47,15 @@ public class CategoryBrandRelationController {
         return R.ok().put("data", result);
     }
 
+    /**
+     * 获取分类关联的品牌
+     */
+    @GetMapping("/brands/list")
+    public R brandList(@RequestParam("catId") Long catId) {
+        List<BrandRespVO> result = categoryBrandRelationService.listAllBrands(catId);
+
+        return R.ok().put("data", result);
+    }
 
     /**
      * 信息

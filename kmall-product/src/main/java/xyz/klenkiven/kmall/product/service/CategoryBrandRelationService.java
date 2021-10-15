@@ -3,7 +3,9 @@ package xyz.klenkiven.kmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.product.entity.CategoryBrandRelationEntity;
+import xyz.klenkiven.kmall.product.vo.BrandRespVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,5 +38,10 @@ public interface CategoryBrandRelationService extends IService<CategoryBrandRela
      * @param name new brand name
      */
     void updateBrand(Long brandId, String name);
+
+    /**
+     * Get all brand that related with category
+     */
+    List<BrandRespVO> listAllBrands(Long catId);
 }
 

@@ -30,6 +30,15 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+        # Kmall-Member Router
+        # Pattern: /api/member/**
+        - id: kmall_member
+          uri: lb://kmall-member
+          predicates:
+            - Path=/api/member/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
         # 酷商城-后台管理系统：前后端对接规则 /api/**
         - id: kmall_admin
           uri: lb://kmall-admin
