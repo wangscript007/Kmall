@@ -14,6 +14,7 @@ import xyz.klenkiven.kmall.product.service.AttrGroupService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
 import xyz.klenkiven.kmall.product.service.AttrService;
+import xyz.klenkiven.kmall.product.vo.AttrGroupRespVO;
 import xyz.klenkiven.kmall.product.vo.AttrRelationVO;
 import xyz.klenkiven.kmall.product.vo.AttrVO;
 
@@ -70,6 +71,16 @@ public class AttrGroupController {
     @GetMapping("/{attrGroupId}/attr/relation")
     public R attrRelation(@PathVariable String attrGroupId) {
         List<AttrVO> result = attrGroupService.listAllAttrRelation(attrGroupId);
+        return R.ok().put("data", result);
+    }
+
+    /**
+     * 获取分类下所有分组&关联属性
+     */
+    @GetMapping("/{catelogId}/withattr")
+    public R catalogWithAttr(@PathVariable("catelogId") Long catalogId) {
+        List<AttrGroupRespVO> result = attrGroupService.listAttrGroup(catalogId);
+
         return R.ok().put("data", result);
     }
 

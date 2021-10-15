@@ -3,7 +3,6 @@ package xyz.klenkiven.kmall.product.service.impl;
 import com.mysql.cj.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import xyz.klenkiven.kmall.product.entity.AttrEntity;
 import xyz.klenkiven.kmall.product.entity.AttrGroupEntity;
 import xyz.klenkiven.kmall.product.service.AttrGroupService;
 import xyz.klenkiven.kmall.product.service.CategoryService;
+import xyz.klenkiven.kmall.product.vo.AttrGroupRespVO;
 import xyz.klenkiven.kmall.product.vo.AttrRelationVO;
 import xyz.klenkiven.kmall.product.vo.AttrVO;
 
@@ -88,7 +88,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         if (attrIdList.size() != 0) {
             result = attrDao.selectList(
                     new QueryWrapper<AttrEntity>()
-                    .in("attr_id", attrIdList)
+                            .in("attr_id", attrIdList)
             ).stream().map((item) -> {
                 AttrVO attrVO = new AttrVO();
                 BeanUtils.copyProperties(item, attrVO);
@@ -112,6 +112,45 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
                     return relation;
                 })
                 .forEach(relationDao::insert);
+    }
+
+    @Override
+    public List<AttrGroupRespVO> listAttrGroup(Long catalogId) {
+        // Get all Attribute Groups
+        List<AttrGroupRespVO> allAttrGroups =
+                this.list(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catalogId)).stream()
+                        .map((item) -> {
+                            AttrGroupRespVO attrGroupRespVO = new AttrGroupRespVO();
+                            BeanUtils.copyProperties(item, attrGroupRespVO);
+                            return attrGroupRespVO;
+                        })
+                        .collect(Collectors.toList());
+
+        // Fill Attribute Group
+        return allAttrGroups.stream()
+                .peek((attrGroup) -> {
+                    List<AttrAttrgroupRelationEntity> relationEntities = relationDao.selectList(
+                            new QueryWrapper<AttrAttrgroupRelationEntity>()
+                                    .eq("attr_group_id", attrGroup.getAttrGroupId())
+                    );
+
+                    // Get Attribute and Convert to AttrVO List
+                    List<AttrVO> attrs = relationEntities.stream()
+                            .map((relationEntity) -> {
+                                AttrEntity attrEntity = attrDao.selectOne(
+                                        new QueryWrapper<AttrEntity>()
+                                                .eq("attr_id", relationEntity.getAttrId())
+                                );
+                                AttrVO vo = new AttrVO();
+                                if (attrEntity != null) {
+                                    BeanUtils.copyProperties(attrEntity, vo);
+                                }
+                                return vo;
+                            })
+                            .collect(Collectors.toList());
+
+                    attrGroup.setAttrs(attrs);
+                }).collect(Collectors.toList());
     }
 
 }
