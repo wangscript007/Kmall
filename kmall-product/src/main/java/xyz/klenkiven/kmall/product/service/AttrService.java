@@ -6,6 +6,7 @@ import xyz.klenkiven.kmall.product.entity.AttrEntity;
 import xyz.klenkiven.kmall.product.vo.AttrRespVO;
 import xyz.klenkiven.kmall.product.vo.AttrVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,5 +52,10 @@ public interface AttrService extends IService<AttrEntity> {
      * Page Attribute(Base Type) that not relate with Attribute Group
      */
     PageUtils pageAttrNoRelation(Map<String, Object> params, Long attrGroupId);
+
+    /**
+     * Remove Cascade
+     */
+    void removeCascadeByIds(List<Long> asList);
 }
 

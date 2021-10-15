@@ -201,4 +201,18 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         return new PageUtils(page);
     }
 
+    @Override
+    public void removeCascadeByIds(List<Long> asList) {
+        this.removeByIds(asList);
+
+        // Remove Relationships
+        /* Attr - AttrGroup Relation */
+        asList.forEach((attrId) -> {
+                    attrAttrgroupRelationDao.delete(
+                            new QueryWrapper<AttrAttrgroupRelationEntity>()
+                                    .eq("attr_id", attrId)
+                    );
+                });
+    }
+
 }
