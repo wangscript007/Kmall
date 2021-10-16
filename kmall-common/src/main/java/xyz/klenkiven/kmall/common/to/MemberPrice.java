@@ -1,4 +1,4 @@
-package xyz.klenkiven.kmall.product.vo;
+package xyz.klenkiven.kmall.common.to;
 
 import lombok.Data;
 

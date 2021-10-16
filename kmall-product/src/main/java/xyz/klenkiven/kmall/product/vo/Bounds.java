@@ -2,6 +2,8 @@ package xyz.klenkiven.kmall.product.vo;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Auto-generated: 2021-10-15 20:45:48
  *
@@ -10,8 +12,8 @@ import lombok.Data;
 @Data
 public class Bounds {
 
-    private int buyBounds;
+    private BigDecimal buyBounds;
 
-    private int growBounds;
+    private BigDecimal growBounds;
 
 }

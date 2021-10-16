@@ -14,7 +14,7 @@ import xyz.klenkiven.kmall.product.entity.SpuInfoEntity;
 import xyz.klenkiven.kmall.product.service.SpuInfoService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
-
+import xyz.klenkiven.kmall.product.vo.SpuSaveVO;
 
 
 /**
@@ -58,8 +58,8 @@ public class SpuInfoController {
      */
     @RequestMapping("/save")
     // @RequiresPermissions("product:spuinfo:save")
-    public R save(@RequestBody SpuInfoEntity spuInfo){
-		spuInfoService.save(spuInfo);
+    public R save(@RequestBody SpuSaveVO spuSaveVO){
+		spuInfoService.savSpuInfo(spuSaveVO);
 
         return R.ok();
     }

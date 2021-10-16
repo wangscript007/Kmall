@@ -3,6 +3,7 @@ package xyz.klenkiven.kmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.product.entity.SpuInfoEntity;
+import xyz.klenkiven.kmall.product.vo.SpuSaveVO;
 
 import java.util.Map;
 
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface SpuInfoService extends IService<SpuInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void savSpuInfo(SpuSaveVO spuSaveVO);
 }
 

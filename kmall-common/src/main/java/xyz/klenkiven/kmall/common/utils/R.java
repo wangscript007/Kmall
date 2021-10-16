@@ -54,6 +54,10 @@ public class R extends HashMap<String, Object> {
 		return new R();
 	}
 
+	public int getCode() {
+		return (Integer) getOrDefault("code", 0);
+	}
+
 	@Override
 	public R put(String key, Object value) {
 		super.put(key, value);

@@ -1,6 +1,7 @@
 package xyz.klenkiven.kmall.product.vo;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public class Skus {
 
     private String skuName;
 
-    private String price;
+    private BigDecimal price;
 
     private String skuTitle;
 
@@ -27,14 +28,20 @@ public class Skus {
 
     private int fullCount;
 
-    private int discount;
+    private BigDecimal discount;
 
+    /**
+     * Ladder Count Status
+     */
     private int countStatus;
 
-    private int fullPrice;
+    private BigDecimal fullPrice;
 
-    private int reducePrice;
+    private BigDecimal reducePrice;
 
+    /**
+     * Full Reduction Status
+     */
     private int priceStatus;
 
     private List<MemberPrice> memberPrice;

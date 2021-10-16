@@ -4,12 +4,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import xyz.klenkiven.kmall.common.to.SkuReductionTO;
 import xyz.klenkiven.kmall.coupon.entity.SkuFullReductionEntity;
 import xyz.klenkiven.kmall.coupon.service.SkuFullReductionService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
@@ -60,6 +57,16 @@ public class SkuFullReductionController {
     // @RequiresPermissions("coupon:skufullreduction:save")
     public R save(@RequestBody SkuFullReductionEntity skuFullReduction){
 		skuFullReductionService.save(skuFullReduction);
+
+        return R.ok();
+    }
+
+    /**
+     * Save All Sku Reduction
+     */
+    @PostMapping("/save/all-reduction")
+    public R saveAllReduction(@RequestBody SkuReductionTO skuReductionTO) {
+        skuFullReductionService.saveAllReduction(skuReductionTO);
 
         return R.ok();
     }

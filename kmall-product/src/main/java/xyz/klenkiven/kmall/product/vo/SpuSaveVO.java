@@ -1,6 +1,7 @@
 package xyz.klenkiven.kmall.product.vo;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -15,11 +16,11 @@ public class SpuSaveVO {
 
     private String spuDescription;
 
-    private int catalogId;
+    private Long catalogId;
 
-    private String brandId;
+    private Long brandId;
 
-    private int weight;
+    private BigDecimal weight;
 
     private int publishStatus;
 

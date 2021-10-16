@@ -3,7 +3,9 @@ package xyz.klenkiven.kmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.product.entity.ProductAttrValueEntity;
+import xyz.klenkiven.kmall.product.vo.BaseAttrs;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +18,10 @@ import java.util.Map;
 public interface ProductAttrValueService extends IService<ProductAttrValueEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * Save Base Attribute
+     */
+    void saveBaseAttrs(Long id, List<BaseAttrs> baseAttrs);
 }
 
