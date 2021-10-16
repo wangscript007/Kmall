@@ -19,9 +19,7 @@ import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.Query;
 
 import xyz.klenkiven.kmall.common.utils.R;
-import xyz.klenkiven.kmall.product.dao.SkuInfoDao;
 import xyz.klenkiven.kmall.product.dao.SpuInfoDao;
-import xyz.klenkiven.kmall.product.dao.SpuInfoDescDao;
 import xyz.klenkiven.kmall.product.entity.*;
 import xyz.klenkiven.kmall.product.feign.CouponFeignService;
 import xyz.klenkiven.kmall.product.service.*;
