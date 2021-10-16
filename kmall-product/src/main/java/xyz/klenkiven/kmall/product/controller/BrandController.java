@@ -63,7 +63,7 @@ public class BrandController {
     @RequestMapping("/save")
     // @RequiresPermissions("product:brand:save")
     public R save(@Validated(AddGroup.class) @RequestBody BrandEntity brand){
-//		brandService.save(brand);
+		brandService.save(brand);
         return R.ok().put("data", brand);
     }
 
