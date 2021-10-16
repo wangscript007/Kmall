@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -48,26 +50,32 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
         SkuFullReductionEntity skuFullReduction = new SkuFullReductionEntity();
         BeanUtils.copyProperties(skuReductionTO, skuFullReduction);
         skuFullReduction.setAddOther(skuReductionTO.getPriceStatus());
-        this.save(skuFullReduction);
+        if (skuFullReduction.getFullPrice().compareTo(BigDecimal.ZERO) > 0) {
+            this.save(skuFullReduction);
+        }
 
         // 6.5 Save SKU ladder[RPC]:            sms => sms_sku_ladder
         SkuLadderEntity skuLadderEntity = new SkuLadderEntity();
         BeanUtils.copyProperties(skuReductionTO, skuLadderEntity);
         skuLadderEntity.setAddOther(skuReductionTO.getCountStatus());
-        skuLadderService.save(skuLadderEntity);
+        if (skuLadderEntity.getFullCount() > 0) {
+            skuLadderService.save(skuLadderEntity);
+        }
 
         // 6.6 Save SKU member price[RPC]:      sms => sms_member_price
         List<MemberPrice> memberPriceList = skuReductionTO.getMemberPrice();
         if (memberPriceList == null || memberPriceList.size() == 0) return;
-        memberPriceList.forEach((memberPrice) -> {
-            MemberPriceEntity memberPriceEntity = new MemberPriceEntity();
-            memberPriceEntity.setSkuId(skuReductionTO.getSkuId());
-            memberPriceEntity.setMemberLevelId((long) memberPrice.getId());
-            memberPriceEntity.setMemberLevelName(memberPrice.getName());
-            memberPriceEntity.setMemberPrice(memberPrice.getPrice());
-            memberPriceEntity.setAddOther(1);
-            memberPriceService.save(memberPriceEntity);
-        });
+        memberPriceList.stream()
+                .filter(memberPrice -> memberPrice.getPrice().compareTo(BigDecimal.ZERO) <= 0)
+                .forEach((memberPrice) -> {
+                    MemberPriceEntity memberPriceEntity = new MemberPriceEntity();
+                    memberPriceEntity.setSkuId(skuReductionTO.getSkuId());
+                    memberPriceEntity.setMemberLevelId((long) memberPrice.getId());
+                    memberPriceEntity.setMemberLevelName(memberPrice.getName());
+                    memberPriceEntity.setMemberPrice(memberPrice.getPrice());
+                    memberPriceEntity.setAddOther(1);
+                    memberPriceService.save(memberPriceEntity);
+                });
     }
 
 }
