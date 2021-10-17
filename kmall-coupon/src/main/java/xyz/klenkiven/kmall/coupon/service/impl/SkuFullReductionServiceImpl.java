@@ -65,17 +65,17 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
         // 6.6 Save SKU member price[RPC]:      sms => sms_member_price
         List<MemberPrice> memberPriceList = skuReductionTO.getMemberPrice();
         if (memberPriceList == null || memberPriceList.size() == 0) return;
-        memberPriceList.stream()
-                .filter(memberPrice -> memberPrice.getPrice().compareTo(BigDecimal.ZERO) <= 0)
-                .forEach((memberPrice) -> {
-                    MemberPriceEntity memberPriceEntity = new MemberPriceEntity();
-                    memberPriceEntity.setSkuId(skuReductionTO.getSkuId());
-                    memberPriceEntity.setMemberLevelId((long) memberPrice.getId());
-                    memberPriceEntity.setMemberLevelName(memberPrice.getName());
-                    memberPriceEntity.setMemberPrice(memberPrice.getPrice());
-                    memberPriceEntity.setAddOther(1);
-                    memberPriceService.save(memberPriceEntity);
-                });
+        memberPriceList.forEach((memberPrice) -> {
+            MemberPriceEntity memberPriceEntity = new MemberPriceEntity();
+            memberPriceEntity.setSkuId(skuReductionTO.getSkuId());
+            memberPriceEntity.setMemberLevelId((long) memberPrice.getId());
+            memberPriceEntity.setMemberLevelName(memberPrice.getName());
+            memberPriceEntity.setMemberPrice(memberPrice.getPrice());
+            memberPriceEntity.setAddOther(1);
+            if (memberPrice.getPrice().compareTo(BigDecimal.ZERO) > 0) {
+                memberPriceService.save(memberPriceEntity);
+            }
+        });
     }
 
 }
