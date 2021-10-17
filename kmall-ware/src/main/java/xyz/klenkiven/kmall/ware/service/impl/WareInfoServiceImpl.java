@@ -1,5 +1,6 @@
 package xyz.klenkiven.kmall.ware.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -18,9 +19,19 @@ public class WareInfoServiceImpl extends ServiceImpl<WareInfoDao, WareInfoEntity
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        QueryWrapper<WareInfoEntity> wareInfoEntityQueryWrapper = new QueryWrapper<>();
+
+        String key = (String) params.get("key");
+        wareInfoEntityQueryWrapper.and(!StringUtils.isBlank(key),
+                wrapper ->
+                        wrapper.eq("id", key).or()
+                        .like("name", key).or()
+                        .eq("areacode", key)
+        );
+
         IPage<WareInfoEntity> page = this.page(
                 new Query<WareInfoEntity>().getPage(params),
-                new QueryWrapper<WareInfoEntity>()
+                wareInfoEntityQueryWrapper
         );
 
         return new PageUtils(page);
