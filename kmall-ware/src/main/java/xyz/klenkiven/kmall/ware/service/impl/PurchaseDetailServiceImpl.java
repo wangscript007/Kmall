@@ -1,5 +1,6 @@
 package xyz.klenkiven.kmall.ware.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -18,9 +19,21 @@ public class PurchaseDetailServiceImpl extends ServiceImpl<PurchaseDetailDao, Pu
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        QueryWrapper<PurchaseDetailEntity> purchaseDetailEntityQueryWrapper = new QueryWrapper<>();
+
+        String wareId = (String) params.get("wareId");
+        purchaseDetailEntityQueryWrapper.eq(!StringUtils.isBlank(wareId), "ware_id", wareId);
+
+        String status = (String) params.get("status");
+        purchaseDetailEntityQueryWrapper.eq(!StringUtils.isBlank(status), "status", status);
+
+        String key = (String) params.get("key");
+        purchaseDetailEntityQueryWrapper.and(!StringUtils.isBlank(key), wrapper ->
+                wrapper.eq("purchase_id", key).or().eq("sku_id", key));
+
         IPage<PurchaseDetailEntity> page = this.page(
                 new Query<PurchaseDetailEntity>().getPage(params),
-                new QueryWrapper<PurchaseDetailEntity>()
+                purchaseDetailEntityQueryWrapper
         );
 
         return new PageUtils(page);
