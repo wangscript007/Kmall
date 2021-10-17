@@ -1,15 +1,19 @@
 package xyz.klenkiven.kmall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import xyz.klenkiven.kmall.product.entity.AttrEntity;
+import xyz.klenkiven.kmall.product.entity.ProductAttrValueEntity;
 import xyz.klenkiven.kmall.product.service.AttrService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
+import xyz.klenkiven.kmall.product.service.ProductAttrValueService;
 import xyz.klenkiven.kmall.product.vo.AttrRespVO;
 import xyz.klenkiven.kmall.product.vo.AttrVO;
 
@@ -23,9 +27,11 @@ import xyz.klenkiven.kmall.product.vo.AttrVO;
  */
 @RestController
 @RequestMapping("product/attr")
+@RequiredArgsConstructor
 public class AttrController {
-    @Autowired
-    private AttrService attrService;
+
+    private final AttrService attrService;
+    private final ProductAttrValueService productAttrValueService;
 
     /**
      * 列表
@@ -36,6 +42,17 @@ public class AttrController {
         PageUtils page = attrService.queryPage(params);
 
         return R.ok().put("page", page);
+    }
+
+    /**
+     * 获取spu规格
+     * /product/attr/base/listforspu/{spuId}
+     */
+    @GetMapping("/base/listforspu/{spuId}")
+    public R listForSpu(@PathVariable String spuId) {
+        List<ProductAttrValueEntity> result = productAttrValueService.listBaseAttrForSpu(spuId);
+
+        return R.ok().put("data", result);
     }
 
     /**
