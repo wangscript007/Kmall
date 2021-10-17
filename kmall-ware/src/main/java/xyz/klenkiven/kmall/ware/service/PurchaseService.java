@@ -3,6 +3,7 @@ package xyz.klenkiven.kmall.ware.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.ware.entity.PurchaseEntity;
+import xyz.klenkiven.kmall.ware.vo.MergeVO;
 
 import java.util.Map;
 
@@ -21,5 +22,10 @@ public interface PurchaseService extends IService<PurchaseEntity> {
      * Query Unreceived Purchase
      */
     PageUtils queryUnreceivedPage(Map<String, Object> params);
+
+    /**
+     * Merge Purchase Method
+     */
+    void mergePurchase(MergeVO mergeVO);
 }
 

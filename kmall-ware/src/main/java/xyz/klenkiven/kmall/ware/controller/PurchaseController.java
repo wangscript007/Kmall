@@ -1,6 +1,8 @@
 package xyz.klenkiven.kmall.ware.controller;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,7 @@ import xyz.klenkiven.kmall.ware.entity.PurchaseEntity;
 import xyz.klenkiven.kmall.ware.service.PurchaseService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
-
+import xyz.klenkiven.kmall.ware.vo.MergeVO;
 
 
 /**
@@ -65,7 +67,20 @@ public class PurchaseController {
     @RequestMapping("/save")
     // @RequiresPermissions("ware:purchase:save")
     public R save(@RequestBody PurchaseEntity purchase){
+        purchase.setCreateTime(new Date());
+        purchase.setUpdateTime(new Date());
 		purchaseService.save(purchase);
+
+        return R.ok();
+    }
+
+    /**
+     * 合并采购需求
+     * /ware/purchase/merge
+     */
+    @PostMapping("/merge")
+    public R mergePurchase(@RequestBody MergeVO mergeVO) {
+        purchaseService.mergePurchase(mergeVO);
 
         return R.ok();
     }
@@ -76,6 +91,7 @@ public class PurchaseController {
     @RequestMapping("/update")
     // @RequiresPermissions("ware:purchase:update")
     public R update(@RequestBody PurchaseEntity purchase){
+        purchase.setUpdateTime(new Date());
 		purchaseService.updateById(purchase);
 
         return R.ok();

@@ -15,6 +15,8 @@ spring:
         server-addr: localhost:8848
   application:
     name: kmall-ware
+  jackson:
+    date-format: yyyy-MM-dd HH:mm
 
 #mybatis
 mybatis-plus:
@@ -23,3 +25,6 @@ mybatis-plus:
     db-config:
       # 主键自增策略
       id-type: AUTO
+logging:
+  level:
+    xyz.klenkiven: debug
