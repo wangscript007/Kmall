@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.Query;
 
@@ -63,6 +64,18 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
     @Override
     public List<ProductAttrValueEntity> listBaseAttrForSpu(String spuId) {
         return this.list(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id", spuId));
+    }
+
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public void updateSpuAttr(Long spuId, List<ProductAttrValueEntity> entities) {
+        this.remove(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id", spuId));
+
+        if (entities == null || entities.size() == 0) return;
+        List<ProductAttrValueEntity> collect = entities.stream()
+                .peek((item) -> item.setSpuId(spuId))
+                .collect(Collectors.toList());
+        this.saveBatch(collect);
     }
 
 }

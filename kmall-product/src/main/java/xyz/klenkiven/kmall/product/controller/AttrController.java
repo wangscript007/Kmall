@@ -56,6 +56,18 @@ public class AttrController {
     }
 
     /**
+     * 修改商品规格
+     * /product/attr/update/{spuId}
+     */
+    @PostMapping("/update/{spuId}")
+    public R updateSpuAttr(@PathVariable Long spuId,
+                           @RequestBody List<ProductAttrValueEntity> entities) {
+        productAttrValueService.updateSpuAttr(spuId, entities);
+
+        return R.ok();
+    }
+
+    /**
      * List
      */
     @GetMapping("/{attrType}/list/{catelogId}")
