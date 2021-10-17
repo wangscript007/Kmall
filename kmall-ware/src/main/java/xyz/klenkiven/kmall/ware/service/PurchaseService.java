@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.ware.entity.PurchaseEntity;
 import xyz.klenkiven.kmall.ware.vo.MergeVO;
+import xyz.klenkiven.kmall.ware.vo.PurchaseDoneVO;
 
 import java.util.List;
 import java.util.Map;
@@ -33,5 +34,10 @@ public interface PurchaseService extends IService<PurchaseEntity> {
      * Receive Purchase by Stuff
      */
     void receivePurchase(List<Long> purchaseList);
+
+    /**
+     * Purchase Done
+     */
+    void done(PurchaseDoneVO purchaseDoneVO);
 }
 

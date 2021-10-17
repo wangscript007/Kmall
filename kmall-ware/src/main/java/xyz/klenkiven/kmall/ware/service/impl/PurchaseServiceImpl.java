@@ -3,10 +3,7 @@ package xyz.klenkiven.kmall.ware.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -22,7 +19,10 @@ import xyz.klenkiven.kmall.ware.entity.PurchaseDetailEntity;
 import xyz.klenkiven.kmall.ware.entity.PurchaseEntity;
 import xyz.klenkiven.kmall.ware.service.PurchaseDetailService;
 import xyz.klenkiven.kmall.ware.service.PurchaseService;
+import xyz.klenkiven.kmall.ware.service.WareSkuService;
 import xyz.klenkiven.kmall.ware.vo.MergeVO;
+import xyz.klenkiven.kmall.ware.vo.PurchaseDoneVO;
+import xyz.klenkiven.kmall.ware.vo.PurchaseItemDoneVO;
 
 
 @Service("purchaseService")
@@ -30,6 +30,7 @@ import xyz.klenkiven.kmall.ware.vo.MergeVO;
 public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity> implements PurchaseService {
 
     private final PurchaseDetailService purchaseDetailService;
+    private final WareSkuService wareSkuService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -114,6 +115,38 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
                     .collect(Collectors.toList());
             purchaseDetailService.updateBatchById(detailEntities);
         }));
+    }
+
+    @Override
+    public void done(PurchaseDoneVO purchaseDoneVO) {
+        boolean flag = true;
+
+        // Update Purchase Items
+        List<PurchaseDetailEntity> purchaseDetailEntityList = new ArrayList<>();
+        for (PurchaseItemDoneVO item : purchaseDoneVO.getItems()) {
+            PurchaseDetailEntity purchaseDetail = new PurchaseDetailEntity();
+            purchaseDetail.setId(item.getItemId());
+            purchaseDetail.setStatus(item.getStatus());
+            purchaseDetailEntityList.add(purchaseDetail);
+
+            if (Objects.equals(item.getStatus(), WareConstant.PurchaseDetailStatus.HAS_ERROR.getCode())) {
+                flag = false;
+            } else {
+                // Add Stock
+                PurchaseDetailEntity byId = purchaseDetailService.getById(item.getItemId());
+                wareSkuService.addStock(byId.getWareId(), byId.getSkuId(), byId.getSkuNum());
+            }
+        }
+        purchaseDetailService.updateBatchById(purchaseDetailEntityList);
+
+        // Update Purchase
+        PurchaseEntity purchaseEntity = this.getById(purchaseDoneVO.getId());
+        purchaseEntity.setStatus(
+                flag?
+                WareConstant.PurchaseStatus.FINISHED.getCode() :
+                WareConstant.PurchaseStatus.HAS_ERROR.getCode()
+        );
+        this.updateById(purchaseEntity);
     }
 
 }

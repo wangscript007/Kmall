@@ -1,5 +1,6 @@
 package xyz.klenkiven.kmall.ware.dao;
 
+import org.apache.ibatis.annotations.Param;
 import xyz.klenkiven.kmall.ware.entity.WareSkuEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,5 +14,10 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface WareSkuDao extends BaseMapper<WareSkuEntity> {
-	
+
+    /**
+     * Add Sku Stock DAO
+     */
+    void addStock(@Param("wareId") Long wareId, @Param("skuId") Long skuId, @Param("skuNum") Integer skuNum);
+
 }

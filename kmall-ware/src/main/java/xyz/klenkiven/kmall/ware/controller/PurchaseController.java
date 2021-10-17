@@ -13,6 +13,7 @@ import xyz.klenkiven.kmall.ware.service.PurchaseService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
 import xyz.klenkiven.kmall.ware.vo.MergeVO;
+import xyz.klenkiven.kmall.ware.vo.PurchaseDoneVO;
 
 
 /**
@@ -91,6 +92,16 @@ public class PurchaseController {
     @PostMapping("/received")
     public R receivePurchase(@RequestBody List<Long> purchaseList) {
         purchaseService.receivePurchase(purchaseList);
+
+        return R.ok();
+    }
+
+    /**
+     * 完成采购
+     */
+    @PostMapping("/done")
+    public R donePurchase(@RequestBody PurchaseDoneVO purchaseDoneVO) {
+        purchaseService.done(purchaseDoneVO);
 
         return R.ok();
     }
