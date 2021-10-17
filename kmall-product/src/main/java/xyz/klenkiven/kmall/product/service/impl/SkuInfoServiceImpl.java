@@ -1,6 +1,9 @@
 package xyz.klenkiven.kmall.product.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -18,9 +21,28 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        QueryWrapper<SkuInfoEntity> skuInfoEntityQueryWrapper = new QueryWrapper<>();
+
+        String catalogId = (String) params.get("catelogId");
+        skuInfoEntityQueryWrapper.eq(!StringUtils.isEmpty(catalogId), "catalog_id", catalogId);
+        String brandId = (String) params.get("brandId");
+        skuInfoEntityQueryWrapper.eq(!StringUtils.isEmpty(catalogId), "brand_id", brandId);
+        String key = (String) params.get("key");
+        skuInfoEntityQueryWrapper.and(!StringUtils.isBlank(key), (wrapper) ->
+                wrapper.eq("sku_id", key).or().like("sku_name", key));
+
+        try {
+            BigDecimal min = new BigDecimal((String) params.get("min"));
+            skuInfoEntityQueryWrapper.ge(min.compareTo(BigDecimal.ZERO) > 0, "price", min);
+            BigDecimal max = new BigDecimal((String) params.get("max"));
+            skuInfoEntityQueryWrapper.le(max.compareTo(BigDecimal.ZERO) > 0, "price", max);
+        } catch (Exception e) {
+            // Do nothing
+        }
+
         IPage<SkuInfoEntity> page = this.page(
                 new Query<SkuInfoEntity>().getPage(params),
-                new QueryWrapper<SkuInfoEntity>()
+                skuInfoEntityQueryWrapper
         );
 
         return new PageUtils(page);
