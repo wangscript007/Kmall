@@ -86,6 +86,16 @@ public class PurchaseController {
     }
 
     /**
+     * 领取采购单
+     */
+    @PostMapping("/received")
+    public R receivePurchase(@RequestBody List<Long> purchaseList) {
+        purchaseService.receivePurchase(purchaseList);
+
+        return R.ok();
+    }
+
+    /**
      * 修改
      */
     @RequestMapping("/update")

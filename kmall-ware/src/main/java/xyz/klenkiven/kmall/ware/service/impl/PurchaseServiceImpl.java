@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -84,6 +85,35 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
         purchaseEntity.setId(purchaseId);
         purchaseEntity.setUpdateTime(new Date());
         this.updateById(purchaseEntity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public void receivePurchase(List<Long> purchaseList) {
+        // Filter
+        List<PurchaseEntity> collect = purchaseList.stream()
+                .map(this::getById)
+                .filter((entity) ->
+                        Objects.equals(entity.getStatus(), WareConstant.PurchaseStatus.CREATED.getCode()) ||
+                                Objects.equals(entity.getStatus(), WareConstant.PurchaseStatus.ASSIGNED.getCode())
+                )
+                .peek(purchaseEntity -> {
+                    purchaseEntity.setStatus(WareConstant.PurchaseStatus.RECEIVED.getCode());
+                    purchaseEntity.setUpdateTime(new Date());
+                }).collect(Collectors.toList());
+
+        // Save Purchase
+        this.updateBatchById(collect);
+
+        // Save Purchase Detail
+        collect.forEach((purchaseEntity -> {
+            List<PurchaseDetailEntity> detailEntities =
+                    purchaseDetailService.listByPurchaseId(purchaseEntity.getId());
+            detailEntities = detailEntities.stream()
+                    .peek(detailEntity -> detailEntity.setStatus(WareConstant.PurchaseDetailStatus.BUYING.getCode()))
+                    .collect(Collectors.toList());
+            purchaseDetailService.updateBatchById(detailEntities);
+        }));
     }
 
 }

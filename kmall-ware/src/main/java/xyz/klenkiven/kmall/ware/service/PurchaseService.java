@@ -5,6 +5,7 @@ import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.ware.entity.PurchaseEntity;
 import xyz.klenkiven.kmall.ware.vo.MergeVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,5 +28,10 @@ public interface PurchaseService extends IService<PurchaseEntity> {
      * Merge Purchase Method
      */
     void mergePurchase(MergeVO mergeVO);
+
+    /**
+     * Receive Purchase by Stuff
+     */
+    void receivePurchase(List<Long> purchaseList);
 }
 
