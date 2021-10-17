@@ -4,11 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import xyz.klenkiven.kmall.ware.entity.PurchaseEntity;
 import xyz.klenkiven.kmall.ware.service.PurchaseService;
@@ -29,6 +25,16 @@ import xyz.klenkiven.kmall.common.utils.R;
 public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
+
+    /**
+     * 查询未领取的采购单
+     */
+    @GetMapping("/unreceive/list")
+    public R unreceivedList(@RequestParam Map<String, Object> params) {
+        PageUtils page = purchaseService.queryUnreceivedPage(params);
+
+        return R.ok().put("page", page);
+    }
 
     /**
      * 列表
