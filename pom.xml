@@ -27,6 +27,7 @@
         <module>kmall-ware</module>
         <module>kmall-common</module>
         <module>kmall-third-party</module>
+        <module>kmall-search</module>
     </modules>
 
     <description>酷商城-聚合服务</description>
