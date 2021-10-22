@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Mark sunlightcs@gmail.com
  */
-public class R extends HashMap<String, Object> {
+public class R<T> extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
 	
 	public R() {
@@ -19,39 +19,39 @@ public class R extends HashMap<String, Object> {
 		put("msg", "success");
 	}
 	
-	public static R error() {
+	public static R<?> error() {
 		return error(HttpStatus.SC_INTERNAL_SERVER_ERROR, "未知异常，请联系管理员");
 	}
 	
-	public static R error(String msg) {
+	public static R<?> error(String msg) {
 		return error(HttpStatus.SC_INTERNAL_SERVER_ERROR, msg);
 	}
 
-	public static R error(ExceptionCodeEnum e) {
+	public static R<?> error(ExceptionCodeEnum e) {
 		return error(e.getCode(), e.getMessage());
 	}
 	
-	public static R error(int code, String msg) {
-		R r = new R();
+	public static R<?> error(int code, String msg) {
+		R<?> r = new R<>();
 		r.put("code", code);
 		r.put("msg", msg);
 		return r;
 	}
 
-	public static R ok(String msg) {
-		R r = new R();
+	public static R<?> ok(String msg) {
+		R<?> r = new R<>();
 		r.put("msg", msg);
 		return r;
 	}
 	
-	public static R ok(Map<String, Object> map) {
-		R r = new R();
+	public static R<?> ok(Map<String, Object> map) {
+		R<?> r = new R<>();
 		r.putAll(map);
 		return r;
 	}
 	
-	public static R ok() {
-		return new R();
+	public static R<?> ok() {
+		return new R<>();
 	}
 
 	public int getCode() {
@@ -59,8 +59,16 @@ public class R extends HashMap<String, Object> {
 	}
 
 	@Override
-	public R put(String key, Object value) {
+	public R<?> put(String key, Object value) {
 		super.put(key, value);
+		return this;
+	}
+
+	/**
+	 * Put Data whose type is T
+	 */
+	public R<T> putData(T data) {
+		put("data", data);
 		return this;
 	}
 }
