@@ -20,7 +20,7 @@
             ware_id = #{wareId} and sku_id = #{skuId}
     </update>
     
-    <select id="getSkuHasStock" resultType="java.lang.Long">
+    <select id="getStockBySkuId" resultType="java.lang.Long">
         select sum(`kmall_wms`.wms_ware_sku.stock - `kmall_wms`.wms_ware_sku.stock_locked)
         from `kmall_wms`.wms_ware_sku
         where sku_id = #{skuId}

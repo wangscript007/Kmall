@@ -62,7 +62,7 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             wareSkuEntity.setStock(skuNum);
             wareSkuEntity.setStockLocked(0);
             wareSkuEntity.setSkuName("");
-            R<?> r = skuFeignService.infoSku(skuId);
+            R r = skuFeignService.infoSku(skuId);
             if (r.getCode() == 0) {
                 Map<String, Object> skuInfo = (Map<String, Object>) r.get("skuInfo");
                 wareSkuEntity.setSkuName((String) skuInfo.get("skuName"));
@@ -81,8 +81,8 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
                 .map(skuId -> {
                     SkuHasStockTO hasStockVO = new SkuHasStockTO();
                     hasStockVO.setSkuId(skuId);
-                    long stock = baseMapper.getStockBySkuId(skuId);
-                    hasStockVO.setHasStock(stock > 0);
+                    Long stock = baseMapper.getStockBySkuId(skuId);
+                    hasStockVO.setHasStock(stock != null && stock > 0);
                     return hasStockVO;
                 }).collect(Collectors.toList());
     }

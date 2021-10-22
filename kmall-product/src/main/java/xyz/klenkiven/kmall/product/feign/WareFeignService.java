@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import xyz.klenkiven.kmall.common.to.SkuHasStockTO;
 import xyz.klenkiven.kmall.common.utils.R;
+import xyz.klenkiven.kmall.common.utils.Result;
 
 import java.util.List;
 
@@ -20,6 +21,6 @@ public interface WareFeignService {
      * /ware/waresku/has-stock
      */
     @PostMapping("/ware/waresku/has-stock")
-    R<List<SkuHasStockTO>> getSkuHasStock(@RequestBody List<Long> skuIds);
+    Result<List<SkuHasStockTO>> getSkuHasStock(@RequestBody List<Long> skuIds);
 
 }
