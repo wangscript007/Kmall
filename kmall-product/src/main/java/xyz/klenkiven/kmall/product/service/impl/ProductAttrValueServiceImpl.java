@@ -62,7 +62,7 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
     }
 
     @Override
-    public List<ProductAttrValueEntity> listBaseAttrForSpu(String spuId) {
+    public List<ProductAttrValueEntity> listBaseAttrForSpu(Long spuId) {
         return this.list(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id", spuId));
     }
 

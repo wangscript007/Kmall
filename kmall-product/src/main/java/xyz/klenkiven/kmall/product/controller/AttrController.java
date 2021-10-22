@@ -28,6 +28,7 @@ import xyz.klenkiven.kmall.product.vo.AttrVO;
 @RestController
 @RequestMapping("product/attr")
 @RequiredArgsConstructor
+@SuppressWarnings("rawtypes")
 public class AttrController {
 
     private final AttrService attrService;
