@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,6 +20,7 @@ import xyz.klenkiven.kmall.ware.dao.WareSkuDao;
 import xyz.klenkiven.kmall.ware.entity.WareSkuEntity;
 import xyz.klenkiven.kmall.ware.feign.SkuFeignService;
 import xyz.klenkiven.kmall.ware.service.WareSkuService;
+import xyz.klenkiven.kmall.common.to.SkuHasStockTO;
 
 
 @Service("wareSkuService")
@@ -44,6 +48,7 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void addStock(Long wareId, Long skuId, Integer skuNum) {
         List<WareSkuEntity> entities = baseMapper.selectList(
                 new QueryWrapper<WareSkuEntity>()
@@ -57,7 +62,7 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             wareSkuEntity.setStock(skuNum);
             wareSkuEntity.setStockLocked(0);
             wareSkuEntity.setSkuName("");
-            R r = skuFeignService.infoSku(skuId);
+            R<?> r = skuFeignService.infoSku(skuId);
             if (r.getCode() == 0) {
                 Map<String, Object> skuInfo = (Map<String, Object>) r.get("skuInfo");
                 wareSkuEntity.setSkuName((String) skuInfo.get("skuName"));
@@ -66,6 +71,20 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         } else {
             baseMapper.addStock(wareId, skuId, skuNum);
         }
+    }
+
+    @Override
+    public List<SkuHasStockTO> getSkuHasStock(List<Long> skuIds) {
+        if (skuIds == null || skuIds.size() == 0) return new ArrayList<>();
+
+        return skuIds.stream()
+                .map(skuId -> {
+                    SkuHasStockTO hasStockVO = new SkuHasStockTO();
+                    hasStockVO.setSkuId(skuId);
+                    long stock = baseMapper.getStockBySkuId(skuId);
+                    hasStockVO.setHasStock(stock > 0);
+                    return hasStockVO;
+                }).collect(Collectors.toList());
     }
 
 }

@@ -1,20 +1,17 @@
 package xyz.klenkiven.kmall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import xyz.klenkiven.kmall.ware.entity.WareSkuEntity;
 import xyz.klenkiven.kmall.ware.service.WareSkuService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
-
+import xyz.klenkiven.kmall.common.to.SkuHasStockTO;
 
 
 /**
@@ -26,9 +23,21 @@ import xyz.klenkiven.kmall.common.utils.R;
  */
 @RestController
 @RequestMapping("ware/waresku")
+@SuppressWarnings("rawtypes")
 public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
+
+    /**
+     * [RPC] Query SKU has Stock
+     * /ware/waresku/has-stock
+     */
+    @PostMapping("/has-stock")
+    public R<List<SkuHasStockTO>> getSkuHasStock(@RequestBody List<Long> skuIds) {
+        List<SkuHasStockTO> result = wareSkuService.getSkuHasStock(skuIds);
+
+        return R.ok(result);
+    }
 
     /**
      * 列表
