@@ -17,5 +17,15 @@
         <result property="valueType" column="value_type"/>
     </resultMap>
 
+    <select id="listSearchAttributeId" resultType="java.lang.Long">
+        select `kmall_pms`.`pms_attr`.attr_id
+        from kmall_pms.pms_attr
+        where
+            `kmall_pms`.`pms_attr`.attr_id in (
+                <foreach collection="attrIds" item="id" separator=",">
+                    #{id}
+                </foreach>
+            )
+    </select>
 
 </mapper>

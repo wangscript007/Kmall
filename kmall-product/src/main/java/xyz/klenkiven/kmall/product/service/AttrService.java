@@ -57,5 +57,10 @@ public interface AttrService extends IService<AttrEntity> {
      * Remove Cascade
      */
     void removeCascadeByIds(List<Long> asList);
+
+    /**
+     * List all Attributes Can be used to Search
+     */
+    List<Long> listSearchAttributeId(List<Long> attrIdList);
 }
 
