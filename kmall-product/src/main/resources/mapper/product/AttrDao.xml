@@ -25,7 +25,7 @@
                 <foreach collection="attrIds" item="id" separator=",">
                     #{id}
                 </foreach>
-            )
+            ) and search_type = 1
     </select>
 
 </mapper>
