@@ -39,4 +39,41 @@ public class ProductConstant {
         }
     }
 
+    /**
+     * Product - SPU Status
+     * @author klenkiven
+     */
+    public enum SpuStatus {
+        /**
+         * Created
+         */
+        CREATED(0, "Created"),
+
+        /**
+         * SPU Up
+         */
+        SPU_UP(1, "Spu Up"),
+
+        /**
+         * SPU Down
+         */
+        SPU_DOWN(2, "SPU Down");
+
+
+        Integer code;
+        String msg;
+        SpuStatus(Integer code, String msg) {
+            this.code = code;
+            this.msg  = msg;
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+    }
+
 }

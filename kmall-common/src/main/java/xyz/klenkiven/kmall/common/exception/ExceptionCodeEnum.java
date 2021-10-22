@@ -11,7 +11,12 @@ public enum ExceptionCodeEnum {
     /**
      * Kmall Validation Error
      */
-    VALIDATION_ERROR(100001, "Arguments validation incorrect.");
+    VALIDATION_ERROR(100001, "Arguments validation incorrect."),
+
+    /**
+     * Product Up Status Error
+     */
+    PRODUCT_UP_ERROR(110000, "Product Up Status Error");
 
     Integer code;
     String message;

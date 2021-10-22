@@ -4,11 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import xyz.klenkiven.kmall.product.entity.SpuInfoEntity;
 import xyz.klenkiven.kmall.product.service.SpuInfoService;
@@ -24,11 +20,24 @@ import xyz.klenkiven.kmall.product.vo.SpuSaveVO;
  * @email wzl709@outlook.com
  * @date 2021-08-29 16:07:27
  */
+@SuppressWarnings("rawtypes")
 @RestController
 @RequestMapping("product/spuinfo")
+
 public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;
+
+    /**
+     * 商品上架
+     * /product/spuinfo/{spuId}/up
+     */
+    @PostMapping("/{spuId}/up")
+    public R spuUp(@PathVariable Long spuId) {
+        spuInfoService.productUp(spuId);
+
+        return R.ok();
+    }
 
     /**
      * 列表

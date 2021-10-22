@@ -1,5 +1,6 @@
 package xyz.klenkiven.kmall.product.dao;
 
+import org.apache.ibatis.annotations.Param;
 import xyz.klenkiven.kmall.product.entity.SpuInfoEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,5 +14,10 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SpuInfoDao extends BaseMapper<SpuInfoEntity> {
-	
+
+    /**
+     * Update SPU Status
+     */
+    void updateSpuStatus(@Param("spuId") Long spuId, @Param("code") Integer code);
+
 }
