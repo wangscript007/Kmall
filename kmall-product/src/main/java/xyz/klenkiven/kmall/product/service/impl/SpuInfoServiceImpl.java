@@ -21,6 +21,7 @@ import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.Query;
 
 import xyz.klenkiven.kmall.common.utils.R;
+import xyz.klenkiven.kmall.common.utils.Result;
 import xyz.klenkiven.kmall.product.dao.SpuInfoDao;
 import xyz.klenkiven.kmall.product.entity.*;
 import xyz.klenkiven.kmall.product.feign.CouponFeignService;
@@ -114,7 +115,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         SpuBoundsTO spuBoundsTO = new SpuBoundsTO();
         BeanUtils.copyProperties(spuSaveVO.getBounds(), spuBoundsTO);
         spuBoundsTO.setSpuId(spuInfo.getId());
-        R<?> saveSpuBounds = couponFeignService.saveSpuBounds(spuBoundsTO);
+        R saveSpuBounds = couponFeignService.saveSpuBounds(spuBoundsTO);
         if (saveSpuBounds.getCode() != 0) {
             log.error("[RPC ERROR] SPU Bounds Save Failed: " + saveSpuBounds.get("message"));
         }
@@ -173,7 +174,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             SkuReductionTO skuReductionTO = new SkuReductionTO();
             BeanUtils.copyProperties(sku, skuReductionTO);
             skuReductionTO.setSkuId(skuInfoEntity.getSkuId());
-            R<?> skuReduction = couponFeignService.saveSkuReduction(skuReductionTO);
+            R skuReduction = couponFeignService.saveSkuReduction(skuReductionTO);
             if (skuReduction.getCode() != 0) {
                 log.error("[RPC ERROR] SKU Reduction Save Failed: " + skuReduction.get("message"));
             }
@@ -181,6 +182,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class})
     public void productUp(Long spuId) {
         List<SkuESModel> upProductList = new ArrayList<>();
 
@@ -210,7 +212,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         // Get SKU Has Stock Status
         Map<Long, Boolean> skuStockMap = new HashMap<>();
         try {
-            R<List<SkuHasStockTO>> skuHasStock = wareFeignService.getSkuHasStock(skuIdList);
+            Result<List<SkuHasStockTO>> skuHasStock = wareFeignService.getSkuHasStock(skuIdList);
             skuStockMap = skuHasStock.getData().stream()
                     .collect(Collectors.toMap(SkuHasStockTO::getSkuId, SkuHasStockTO::getHasStock));
         } catch (Exception e) {
@@ -246,7 +248,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }
 
         // 3. [RPC] Save Product List to ElasticSearch
-        R<?> r = searchFeignService.productStatusUp(upProductList);
+        Result<?> r = searchFeignService.productStatusUp(upProductList);
         if (r.getCode() == 0) {
             // Success
             baseMapper.updateSpuStatus(spuId, ProductConstant.SpuStatus.SPU_UP.getCode());

@@ -10,6 +10,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.klenkiven.kmall.common.to.elasticsearch.SkuESModel;
 import xyz.klenkiven.kmall.search.ESConstant;
 import xyz.klenkiven.kmall.search.config.KmallElasticSearchConfig;
@@ -27,6 +28,7 @@ public class ProductSaveServiceImpl implements ProductSaveService {
     private final RestHighLevelClient esClient;
 
     @Override
+    @Transactional(rollbackFor = {Exception.class})
     public boolean saveProductUp(List<SkuESModel> skuESModelList) throws IOException {
         // Save Index Batch: index -> id -> source
         BulkRequest bulkRequest = new BulkRequest();
@@ -40,13 +42,15 @@ public class ProductSaveServiceImpl implements ProductSaveService {
 
         // If Failures do that
         boolean b = bulk.hasFailures();
-        if (!b) {
-            List<String> collect = Arrays.stream(bulk.getItems())
-                    .map(BulkItemResponse::getId)
-                    .collect(Collectors.toList());
+        List<String> collect = Arrays.stream(bulk.getItems())
+                .map(BulkItemResponse::getId)
+                .collect(Collectors.toList());
+        if (b) {
             log.error("Product Status Up Error: {}", collect);
+        } else {
+            log.info("Product Status Up Success: {}", collect);
         }
-        return b;
+        return !b;
     }
 
 }
