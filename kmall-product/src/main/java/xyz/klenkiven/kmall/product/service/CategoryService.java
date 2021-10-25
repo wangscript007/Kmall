@@ -49,5 +49,12 @@ public interface CategoryService extends IService<CategoryEntity> {
      * @return catalog path list
      */
     List<Long> getCatalogPath(Long catalogId);
+
+    /**
+     * List All Category By level
+     * @param level level
+     * @return categories by level
+     */
+    List<CategoryEntity> listCategoryByLevel(Integer level);
 }
 

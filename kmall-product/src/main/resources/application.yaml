@@ -16,6 +16,14 @@ spring:
   application:
     name: kmall-product
 
+  # Thymeleaf Config
+  thymeleaf:
+    cache: false
+
+  # Date Time Format
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
 #mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml

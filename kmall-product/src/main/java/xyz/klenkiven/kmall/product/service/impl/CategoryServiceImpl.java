@@ -80,6 +80,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return result;
     }
 
+    @Override
+    public List<CategoryEntity> listCategoryByLevel(Integer level) {
+        return baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("cat_level", level));
+    }
+
     /**
      * 获取此分类下的所有子分类，以及递归子分类
      * @param parent 父分类
