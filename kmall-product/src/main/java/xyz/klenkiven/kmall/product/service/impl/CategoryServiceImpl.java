@@ -19,6 +19,7 @@ import xyz.klenkiven.kmall.product.entity.CategoryBrandRelationEntity;
 import xyz.klenkiven.kmall.product.entity.CategoryEntity;
 import xyz.klenkiven.kmall.product.service.CategoryBrandRelationService;
 import xyz.klenkiven.kmall.product.service.CategoryService;
+import xyz.klenkiven.kmall.product.vo.Catalog2VO;
 
 
 @Service("categoryService")
@@ -82,7 +83,55 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public List<CategoryEntity> listCategoryByLevel(Integer level) {
-        return baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("cat_level", level));
+        return baseMapper.selectList(
+                new QueryWrapper<CategoryEntity>()
+                        .eq("cat_level", level)
+                        .eq("show_status", 1)
+        );
+    }
+
+    @Override
+    public Map<Long, List<Catalog2VO>> getCatalogJson() {
+        List<CategoryEntity> categoryEntities = listCategoryByLevel(1);
+        if (categoryEntities == null || categoryEntities.size() == 0) {
+            return new HashMap<>();
+        }
+
+        List<CategoryEntity> category2Level = listCategoryByLevel(2);
+        List<CategoryEntity> category3Level = listCategoryByLevel(3);
+        return categoryEntities.stream()
+                .collect(Collectors.toMap(CategoryEntity::getCatId, v -> {
+                    if (category2Level == null) {
+                        return new ArrayList<>();
+                    }
+                    // Get Category Level 2
+                    return category2Level.stream()
+                            .filter(c2l -> c2l.getParentCid().equals(v.getCatId()))
+                            .map(c2l -> {
+                                Catalog2VO catalog2VO = new Catalog2VO();
+                                catalog2VO.setCatalog1Id(v.getCatId());
+                                catalog2VO.setId(c2l.getCatId());
+                                catalog2VO.setName(c2l.getName());
+
+                                // Get Category Level 3
+                                if (category3Level == null) {
+                                    catalog2VO.setCatalog3List(new ArrayList<>());
+                                } else {
+                                    List<Catalog2VO.Catalog3VO> catalog3VOList = category3Level.stream()
+                                            .filter(c3l -> c3l.getParentCid().equals(c2l.getCatId()))
+                                            .map(c3l -> {
+                                                Catalog2VO.Catalog3VO catalog3VO = new Catalog2VO.Catalog3VO();
+                                                catalog3VO.setCatalog2Id(c2l.getCatId());
+                                                catalog3VO.setId(c3l.getCatId());
+                                                catalog3VO.setName(c3l.getName());
+                                                return catalog3VO;
+                                            }).collect(Collectors.toList());
+                                    catalog2VO.setCatalog3List(catalog3VOList);
+                                }
+                                return catalog2VO;
+                            })
+                            .collect(Collectors.toList());
+                }));
     }
 
     /**

@@ -3,6 +3,7 @@ package xyz.klenkiven.kmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.product.entity.CategoryEntity;
+import xyz.klenkiven.kmall.product.vo.Catalog2VO;
 
 import java.util.List;
 import java.util.Map;
@@ -56,5 +57,12 @@ public interface CategoryService extends IService<CategoryEntity> {
      * @return categories by level
      */
     List<CategoryEntity> listCategoryByLevel(Integer level);
+
+    /**
+     * Get Catalog JSON
+     * @return json map
+     */
+    Map<Long, List<Catalog2VO>> getCatalogJson();
+
 }
 
