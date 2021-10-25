@@ -61,3 +61,10 @@ spring:
           # 上面的访问方式并不能正常访问, 利用下面的过滤器，就可以截取合适的部分发送到指定服务位置
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+        # Kmall Host Route
+        # Pattern: /api/ware/**
+        - id: kmall_host
+          uri: lb://kmall-product
+          predicates:
+            - Host=**.kmall.com
