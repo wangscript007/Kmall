@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -94,15 +95,31 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public Map<Long, List<Catalog2VO>> getCatalogJson() {
+        // Cache Penetration: Set Expire Time
+        // Cache Breakdown: Lock
+        // Cache Avalanche: Set Expire Time Random
+
         String catalogJson = stringRedisTemplate.opsForValue().get("getCatalogJson");
-        if (StringUtils.isBlank(catalogJson)) {
-            Map<Long, List<Catalog2VO>> catalogJsonFromDb = getCatalogJsonFromDb();
-            catalogJson = JSON.toJSONString(catalogJsonFromDb);
-            stringRedisTemplate.opsForValue().set("getCatalogJson", catalogJson);
+        Map<Long, List<Catalog2VO>> catalogJsonFromDb = null;
+        if (StringUtils.isEmpty(catalogJson)) {
+            // Lock Query Database Ops And Check Data's Availability
+            // To Protect System from Cache Breakdown
+            synchronized (this) {
+                catalogJson = stringRedisTemplate.opsForValue().get("getCatalogJson");
+                if (StringUtils.isEmpty(catalogJson)) {
+                    catalogJsonFromDb = getCatalogJsonFromDb();
+                    // In concurrency situation, Get data from DB and Save to Redis
+                    catalogJson = JSON.toJSONString(catalogJsonFromDb);
+                    // TODO Set Expire Time Properly
+                    stringRedisTemplate.opsForValue().set("getCatalogJson", catalogJson, 1, TimeUnit.DAYS);
+                } else {
+                    catalogJsonFromDb = JSON.parseObject(catalogJson, new TypeReference<>(){});
+                }
+            }
         }
 
         // new TypeReference<Map<Long, List<Catalog2VO>>>(){}
-        return JSON.parseObject(catalogJson, new TypeReference<>(){});
+        return catalogJsonFromDb;
     }
 
     /**
