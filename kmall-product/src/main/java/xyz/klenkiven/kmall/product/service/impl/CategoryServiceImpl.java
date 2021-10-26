@@ -1,7 +1,10 @@
 package xyz.klenkiven.kmall.product.service.impl;
 
-import com.mysql.cj.util.StringUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -13,9 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.Query;
 
-import xyz.klenkiven.kmall.product.dao.CategoryBrandRelationDao;
 import xyz.klenkiven.kmall.product.dao.CategoryDao;
-import xyz.klenkiven.kmall.product.entity.CategoryBrandRelationEntity;
 import xyz.klenkiven.kmall.product.entity.CategoryEntity;
 import xyz.klenkiven.kmall.product.service.CategoryBrandRelationService;
 import xyz.klenkiven.kmall.product.service.CategoryService;
@@ -27,12 +28,13 @@ import xyz.klenkiven.kmall.product.vo.Catalog2VO;
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
 
     private final CategoryBrandRelationService categoryBrandRelationService;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<CategoryEntity> page = this.page(
                 new Query<CategoryEntity>().getPage(params),
-                new QueryWrapper<CategoryEntity>()
+                new QueryWrapper<>()
         );
 
         return new PageUtils(page);
@@ -60,7 +62,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public void updateDetailById(CategoryEntity category) {
-        if (!StringUtils.isNullOrEmpty(category.getName())) {
+        if (!StringUtils.isBlank(category.getName())) {
             categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
             // TODO Other relationship
         }
@@ -92,6 +94,22 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public Map<Long, List<Catalog2VO>> getCatalogJson() {
+        String catalogJson = stringRedisTemplate.opsForValue().get("getCatalogJson");
+        if (StringUtils.isBlank(catalogJson)) {
+            Map<Long, List<Catalog2VO>> catalogJsonFromDb = getCatalogJsonFromDb();
+            catalogJson = JSON.toJSONString(catalogJsonFromDb);
+            stringRedisTemplate.opsForValue().set("getCatalogJson", catalogJson);
+        }
+
+        // new TypeReference<Map<Long, List<Catalog2VO>>>(){}
+        return JSON.parseObject(catalogJson, new TypeReference<>(){});
+    }
+
+    /**
+     * Get Catalog Data From Database
+     * @return Data Map
+     */
+    private Map<Long, List<Catalog2VO>> getCatalogJsonFromDb() {
         List<CategoryEntity> categoryEntities = listCategoryByLevel(1);
         if (categoryEntities == null || categoryEntities.size() == 0) {
             return new HashMap<>();
