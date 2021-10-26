@@ -18,7 +18,7 @@ spring:
 
   # Thymeleaf Config
   thymeleaf:
-    cache: false
+    cache: true
 
   # Date Time Format
   jackson:
@@ -34,4 +34,4 @@ mybatis-plus:
 
 logging:
   level:
-    xyz.klenkiven: debug
+    xyz.klenkiven: error
