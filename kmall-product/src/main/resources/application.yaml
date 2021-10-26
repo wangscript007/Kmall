@@ -19,7 +19,10 @@ spring:
   # Thymeleaf Config
   thymeleaf:
     cache: true
-
+  #Redis
+  redis:
+    host: 172.17.0.1
+    port: 6379
   # Date Time Format
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
