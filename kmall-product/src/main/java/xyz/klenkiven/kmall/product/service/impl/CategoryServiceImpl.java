@@ -5,8 +5,11 @@ import com.alibaba.fastjson.TypeReference;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -100,30 +103,79 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         // Cache Avalanche: Set Expire Time Random
 
         String catalogJson = stringRedisTemplate.opsForValue().get("getCatalogJson");
-        Map<Long, List<Catalog2VO>> catalogJsonFromDb = null;
+        Map<Long, List<Catalog2VO>> catalogJsonFromDb;
         if (StringUtils.isEmpty(catalogJson)) {
-            // Lock Query Database Ops And Check Data's Availability
-            // To Protect System from Cache Breakdown
-            synchronized (this) {
-                catalogJson = stringRedisTemplate.opsForValue().get("getCatalogJson");
-                if (StringUtils.isEmpty(catalogJson)) {
-                    catalogJsonFromDb = getCatalogJsonFromDb();
-                    // In concurrency situation, Get data from DB and Save to Redis
-                    catalogJson = JSON.toJSONString(catalogJsonFromDb);
-                    // TODO Set Expire Time Properly
-                    stringRedisTemplate.opsForValue().set("getCatalogJson", catalogJson, 1, TimeUnit.DAYS);
-                } else {
-                    catalogJsonFromDb = JSON.parseObject(catalogJson, new TypeReference<>(){});
-                }
-            }
+
+            // Get Catalog From Database
+            System.out.println("Get Data From DB");
+            catalogJsonFromDb = getCatalogJsonFromDb();
+
+            // In concurrency situation, Get data from DB and Save to Redis
+            catalogJson = JSON.toJSONString(catalogJsonFromDb);
+            // TODO Set Expire Time Properly
+             stringRedisTemplate.opsForValue().set("getCatalogJson", catalogJson, 1, TimeUnit.DAYS);
+        } else {
+            System.out.println("Get Data From Redis");
+            catalogJsonFromDb = JSON.parseObject(catalogJson, new TypeReference<>() {  });
         }
 
         // new TypeReference<Map<Long, List<Catalog2VO>>>(){}
         return catalogJsonFromDb;
     }
 
+
+    /**
+     * Get Catalog Data From Database with Distribute Lock
+     *
+     * @return Data Map
+     */
+    @Override
+    public Map<Long, List<Catalog2VO>> getCatalogJsonFromDbWithDistributeLock() {
+        String uuid = UUID.randomUUID().toString();
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+
+        // GET LOCK: Atomic Operation Set Lock
+        Boolean lock = ops.setIfAbsent("lock", uuid, 30, TimeUnit.SECONDS);
+        if (Boolean.TRUE.equals(lock)) {
+            System.out.println("Success Get Distribute LOCK");
+            Map<Long, List<Catalog2VO>> catalogJsonFromDb;
+            try {
+                // DO BUSINESS LOGIC
+                catalogJsonFromDb = getCatalogJson();
+
+            } finally {
+                // RELEASE LOCK: Atomic Operation Delete Lock
+                // MUST BE EXECUTED
+                String script = "if redis.call('get',KEYS[1]) == ARGV[1] " +
+                        "then " +
+                        "   return redis.call('del',KEYS[1]) " +
+                        "else " +
+                        "   return 0 " +
+                        "end";
+                stringRedisTemplate.execute(
+                        new DefaultRedisScript<>(script, Long.class),
+                        List.of("lock"),
+                        uuid
+                );
+                System.out.println("Delete Lock By: " + uuid);
+            }
+            return catalogJsonFromDb;
+        } else {
+            try {
+                System.out.println("Cannot GET Distribute LOCK...Waiting...");
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                System.err.println(e.getMessage());
+            }
+            // Spinlock
+            System.out.println("Retry GET Distribute LOCK");
+            return getCatalogJsonFromDbWithDistributeLock();
+        }
+    }
+
     /**
      * Get Catalog Data From Database
+     *
      * @return Data Map
      */
     private Map<Long, List<Catalog2VO>> getCatalogJsonFromDb() {
@@ -171,7 +223,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     /**
      * 获取此分类下的所有子分类，以及递归子分类
-     * @param parent 父分类
+     *
+     * @param parent      父分类
      * @param allCategory 所有分类
      * @return 子分类
      */

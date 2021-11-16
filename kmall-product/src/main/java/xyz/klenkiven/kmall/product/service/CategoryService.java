@@ -52,6 +52,11 @@ public interface CategoryService extends IService<CategoryEntity> {
     List<Long> getCatalogPath(Long catalogId);
 
     /**
+     * Get Catalog Data From Database with Distribute Lock
+     */
+    Map<Long, List<Catalog2VO>> getCatalogJsonFromDbWithDistributeLock();
+
+    /**
      * List All Category By level
      * @param level level
      * @return categories by level
