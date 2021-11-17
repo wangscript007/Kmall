@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RLock;
+import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +16,10 @@ import xyz.klenkiven.kmall.product.entity.CategoryEntity;
 import xyz.klenkiven.kmall.product.service.CategoryService;
 import xyz.klenkiven.kmall.product.vo.Catalog2VO;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Index Page Controller
@@ -30,6 +32,7 @@ public class IndexController {
 
     private final CategoryService categoryService;
     private final RedissonClient redissonClient;
+    private final StringRedisTemplate redisTemplate;
 
     @RequestMapping({"/", "/index.html"})
     public String indexPage(Model model) {
@@ -66,6 +69,39 @@ public class IndexController {
 
 
         return "hello";
+    }
+
+
+    @GetMapping("write")
+    @ResponseBody
+    public String write() {
+        String s = "";
+        Lock lock = redissonClient.getReadWriteLock("rw-lock").writeLock();
+        try {
+            lock.lock();
+            s = UUID.randomUUID().toString();
+            redisTemplate.opsForValue().set("rw-test", s);
+            Thread.sleep(10 * 1000);
+        } catch (Exception e) {
+            // Do nothing
+        } finally {
+            lock.unlock();
+        }
+        return s;
+    }
+
+    @GetMapping("read")
+    @ResponseBody
+    public String read() {
+        String s = "";
+        Lock lock = redissonClient.getReadWriteLock("rw-lock").readLock();
+        try {
+            lock.lock();
+            s = redisTemplate.opsForValue().get("rw-test");
+        } finally {
+            lock.unlock();
+        }
+        return s;
     }
 
 }
