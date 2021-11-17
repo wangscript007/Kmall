@@ -23,6 +23,10 @@ spring:
   redis:
     host: 172.17.0.1
     port: 6379
+  # Spring Cache
+  cache:
+    type: redis
+
   # Date Time Format
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
