@@ -88,7 +88,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return result;
     }
 
-    @Cacheable({"catalog"}) // this is cacheable
+    @Cacheable(value = {"catalog"}, key = "#root.methodName + #level")
     @Override
     public List<CategoryEntity> listCategoryByLevel(Integer level) {
         return baseMapper.selectList(

@@ -26,6 +26,12 @@ spring:
   # Spring Cache
   cache:
     type: redis
+    redis:
+      time-to-live: 360000
+      key-prefix: CACHE_
+      use-key-prefix: false
+      # Prevent chuan tou
+      cache-null-values: true
 
   # Date Time Format
   jackson:
