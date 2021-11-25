@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -65,6 +67,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         baseMapper.deleteBatchIds(catIdList);
     }
 
+    // @CacheEvict(value = "category", key = "'listCategoryByLevel1'")
+    // @Caching(evict = {
+    //         @CacheEvict(value = "category", key = "'listCategoryByLevel1'"),
+    //         @CacheEvict(value = "category", key = "'getCatalogJson'")
+    // })
+    @CacheEvict(value = "category", allEntries = true)
     @Override
     public void updateDetailById(CategoryEntity category) {
         if (!StringUtils.isBlank(category.getName())) {
@@ -98,31 +106,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         );
     }
 
+    @Cacheable(value = "category", key = "'getCatalogJson'")
     @Override
     public Map<Long, List<Catalog2VO>> getCatalogJson() {
         // Cache Penetration: Set Expire Time
         // Cache Breakdown: Lock
         // Cache Avalanche: Set Expire Time Random
 
-        String catalogJson = stringRedisTemplate.opsForValue().get("getCatalogJson");
-        Map<Long, List<Catalog2VO>> catalogJsonFromDb;
-        if (StringUtils.isEmpty(catalogJson)) {
-
-            // Get Catalog From Database
-            System.out.println("Get Data From DB");
-            catalogJsonFromDb = getCatalogJsonFromDb();
-
-            // In concurrency situation, Get data from DB and Save to Redis
-            catalogJson = JSON.toJSONString(catalogJsonFromDb);
-            // TODO Set Expire Time Properly
-             stringRedisTemplate.opsForValue().set("getCatalogJson", catalogJson, 1, TimeUnit.DAYS);
-        } else {
-            System.out.println("Get Data From Redis");
-            catalogJsonFromDb = JSON.parseObject(catalogJson, new TypeReference<>() {  });
-        }
-
-        // new TypeReference<Map<Long, List<Catalog2VO>>>(){}
-        return catalogJsonFromDb;
+        System.out.println("Get Data From DB");
+        return getCatalogJsonFromDb();
     }
 
 

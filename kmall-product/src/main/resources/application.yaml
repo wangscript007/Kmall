@@ -28,8 +28,7 @@ spring:
     type: redis
     redis:
       time-to-live: 360000
-      key-prefix: CACHE_
-      use-key-prefix: false
+      use-key-prefix: true
       # Prevent chuan tou
       cache-null-values: true
 
