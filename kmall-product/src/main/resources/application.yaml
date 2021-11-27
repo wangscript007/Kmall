@@ -18,7 +18,7 @@ spring:
 
   # Thymeleaf Config
   thymeleaf:
-    cache: true
+    cache: false
   #Redis
   redis:
     host: 172.17.0.1

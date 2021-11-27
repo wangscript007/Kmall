@@ -44,8 +44,7 @@ public class IndexController {
 
     @GetMapping("/index/catalog.json")
     @ResponseBody
-    public Map<Long, List<Catalog2VO>> getCatalogJson() {
-
+    public Map<String, List<Catalog2VO>> getCatalogJson() {
         return categoryService.getCatalogJsonFromDbWithDistributeLock();
     }
 

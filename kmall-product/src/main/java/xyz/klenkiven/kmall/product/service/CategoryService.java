@@ -53,8 +53,9 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     /**
      * Get Catalog Data From Database with Distribute Lock
+     * @return
      */
-    Map<Long, List<Catalog2VO>> getCatalogJsonFromDbWithDistributeLock();
+    Map<String, List<Catalog2VO>> getCatalogJsonFromDbWithDistributeLock();
 
     /**
      * List All Category By level
@@ -67,7 +68,7 @@ public interface CategoryService extends IService<CategoryEntity> {
      * Get Catalog JSON
      * @return json map
      */
-    Map<Long, List<Catalog2VO>> getCatalogJson();
+    Map<String, List<Catalog2VO>> getCatalogJson();
 
 }
 

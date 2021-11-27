@@ -1,18 +1,14 @@
 package xyz.klenkiven.kmall.product.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -96,7 +92,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return result;
     }
 
-    @Cacheable(value = {"catalog"}, key = "#root.methodName + #level")
+    @Cacheable(value = {"category"}, key = "#root.methodName + #level")
     @Override
     public List<CategoryEntity> listCategoryByLevel(Integer level) {
         return baseMapper.selectList(
@@ -106,9 +102,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         );
     }
 
-    @Cacheable(value = "category", key = "'getCatalogJson'")
     @Override
-    public Map<Long, List<Catalog2VO>> getCatalogJson() {
+    public Map<String, List<Catalog2VO>> getCatalogJson() {
         // Cache Penetration: Set Expire Time
         // Cache Breakdown: Lock
         // Cache Avalanche: Set Expire Time Random
@@ -123,8 +118,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      *
      * @return Data Map
      */
+    @Cacheable(value = {"category"}, key = "'getCatalogJson'")
     @Override
-    public Map<Long, List<Catalog2VO>> getCatalogJsonFromDbWithDistributeLock() {
+    public Map<String, List<Catalog2VO>> getCatalogJsonFromDbWithDistributeLock() {
         String uuid = UUID.randomUUID().toString();
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
 
@@ -132,7 +128,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         Boolean lock = ops.setIfAbsent("lock", uuid, 30, TimeUnit.SECONDS);
         if (Boolean.TRUE.equals(lock)) {
             System.out.println("Success Get Distribute LOCK");
-            Map<Long, List<Catalog2VO>> catalogJsonFromDb;
+            Map<String, List<Catalog2VO>> catalogJsonFromDb;
             try {
                 // DO BUSINESS LOGIC
                 catalogJsonFromDb = getCatalogJson();
@@ -172,7 +168,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      *
      * @return Data Map
      */
-    private Map<Long, List<Catalog2VO>> getCatalogJsonFromDb() {
+    private Map<String, List<Catalog2VO>> getCatalogJsonFromDb() {
         List<CategoryEntity> categoryEntities = listCategoryByLevel(1);
         if (categoryEntities == null || categoryEntities.size() == 0) {
             return new HashMap<>();
@@ -181,7 +177,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         List<CategoryEntity> category2Level = listCategoryByLevel(2);
         List<CategoryEntity> category3Level = listCategoryByLevel(3);
         return categoryEntities.stream()
-                .collect(Collectors.toMap(CategoryEntity::getCatId, v -> {
+                .collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
                     if (category2Level == null) {
                         return new ArrayList<>();
                     }
