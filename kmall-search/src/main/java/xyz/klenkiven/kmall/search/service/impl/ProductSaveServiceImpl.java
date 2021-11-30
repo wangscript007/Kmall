@@ -1,4 +1,4 @@
-package xyz.klenkiven.kmall.search.service;
+package xyz.klenkiven.kmall.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import xyz.klenkiven.kmall.common.to.elasticsearch.SkuESModel;
 import xyz.klenkiven.kmall.search.ESConstant;
 import xyz.klenkiven.kmall.search.config.KmallElasticSearchConfig;
+import xyz.klenkiven.kmall.search.service.ProductSaveService;
 
 import java.io.IOException;
 import java.util.Arrays;

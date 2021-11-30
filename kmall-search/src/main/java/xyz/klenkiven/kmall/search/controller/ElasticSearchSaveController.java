@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.klenkiven.kmall.common.exception.ExceptionCodeEnum;
 import xyz.klenkiven.kmall.common.to.elasticsearch.SkuESModel;
-import xyz.klenkiven.kmall.common.utils.R;
 import xyz.klenkiven.kmall.common.utils.Result;
 import xyz.klenkiven.kmall.search.service.ProductSaveService;
 

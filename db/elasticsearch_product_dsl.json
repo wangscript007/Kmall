@@ -1,0 +1,122 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "skuTitle": "HUAWEI"
+          }
+        }
+      ],
+      "filter": [
+        {"term": {
+          "catalogId": "225"
+        }},
+        {"terms": {
+          "brandId": [
+            "1309456673978568706",
+            "1309456673978568706"
+          ]
+        }},
+        {"nested": {
+          "path": "attrs",
+          "query": {
+            "bool": {
+              "must": [
+                {"term": {
+                  "attrs.attrId": "14"
+                }},
+                {"terms": {
+                  "attrs.attrValue": [
+                    "2019",
+                    "2018"
+                  ]
+                }}
+              ]
+            }
+          }
+        }},
+        {"term": {
+          "hasStock": "false"
+        }},
+        {"range": {
+          "skuPrice": {
+            "gte": 1500,
+            "lte": 2000
+          }
+        }}
+      ]
+    }
+  },
+  "sort": [
+    {
+      "skuPrice": {
+        "order": "desc"
+      }
+    }
+  ],
+  "from": 0,
+  "size": 1,
+  "highlight": {
+    "fields": {"skuTitle": {}},
+    "pre_tags": "<b style='color:red'>",
+    "post_tags": "</b>"
+  },
+  "aggs": {
+    "brand_agg": {
+      "terms": {
+        "field": "brandId",
+        "size": 100
+      },
+      "aggs": {
+        "brand_name_agg": {
+          "terms": {
+            "field": "brandName",
+            "size": 10
+          }
+        }
+      }
+    },
+    "catalog_agg": {
+      "terms": {
+        "field": "catalogId",
+        "size": 100
+      },
+      "aggs": {
+        "catalog_name_agg": {
+          "terms": {
+            "field": "catalogName",
+            "size": 10
+          }
+        }
+      }
+    },
+    "attr_agg": {
+      "nested": {
+        "path": "attrs"
+      },
+      "aggs": {
+        "attr_id_agg": {
+          "terms": {
+            "field": "attrs.attrId",
+            "size": 10
+          },
+          "aggs": {
+            "attr_name_agg": {
+              "terms": {
+                "field": "attrs.attrName",
+                "size": 10
+              }
+            },
+            "attr_value_agg": {
+              "terms": {
+                "field": "attrs.attrValue",
+                "size": 10
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
