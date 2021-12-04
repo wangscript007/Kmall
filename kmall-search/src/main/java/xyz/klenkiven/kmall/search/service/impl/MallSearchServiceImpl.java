@@ -1,20 +1,33 @@
 package xyz.klenkiven.kmall.search.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.*;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.nested.NestedAggregationBuilder;
+import org.elasticsearch.search.aggregations.bucket.nested.ParsedNested;
+import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
+import xyz.klenkiven.kmall.common.to.elasticsearch.SkuESModel;
 import xyz.klenkiven.kmall.search.ESConstant;
 import xyz.klenkiven.kmall.search.config.KmallElasticSearchConfig;
 import xyz.klenkiven.kmall.search.service.MallSearchService;
@@ -22,6 +35,9 @@ import xyz.klenkiven.kmall.search.vo.SearchParam;
 import xyz.klenkiven.kmall.search.vo.SearchResult;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Mall Search Service Impl
@@ -41,7 +57,7 @@ public class MallSearchServiceImpl implements MallSearchService {
         try {
             // Execute the search request
             SearchResponse search = esClient.search(searchRequest, KmallElasticSearchConfig.COMMON_OPTIONS);
-            result = buildResult(search);
+            result = buildResult(search, searchParam);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,7 +112,9 @@ public class MallSearchServiceImpl implements MallSearchService {
             }
         }
         // 库存
-        boolQuery.filter(new TermQueryBuilder("hasStock", searchParam.getHasStock() == 1));
+        boolQuery.filter(
+                new TermQueryBuilder("hasStock", Integer.valueOf(1).equals(searchParam.getHasStock()))
+        );
 
         // 价格区间
         if (!StringUtils.isEmpty(searchParam.getSkuPrice())) {
@@ -176,16 +194,103 @@ public class MallSearchServiceImpl implements MallSearchService {
         // ==========================================聚合分析===========================================
 
         searchRequest.source(searchSourceBuilder);
-        System.out.println("ES DSL: " + searchRequest.source().toString());
         return searchRequest;
     }
 
     /**
      * Build Search Result
      * @param search search Response
+     * @param param Request Param
      * @return result
      */
-    private SearchResult buildResult(SearchResponse search) {
-        return null;
+    private SearchResult buildResult(SearchResponse search, SearchParam param) {
+        ObjectMapper mapper = new ObjectMapper();
+        SearchResult searchResult = new SearchResult();
+
+        SearchHits hits = search.getHits();
+        // 1. Product Info
+        List<SkuESModel> products = new ArrayList<>();
+        for (SearchHit hit : hits.getHits()) {
+            SkuESModel skuESModel = new SkuESModel();
+            try {
+                skuESModel = mapper.readValue(hit.getSourceAsString(), SkuESModel.class);
+                // If has keyword, highlight it.
+                if (!StringUtils.isEmpty(param.getKeyword())) {
+                    HighlightField skuTitle = hit.getHighlightFields().get("skuTitle");
+                    String content = skuTitle.getFragments()[0].string();
+                    skuESModel.setSkuTitle(content);
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            products.add(skuESModel);
+        }
+        searchResult.setProducts(products);
+
+        // 2. Paging Info
+        // 2.1 Total Hits Records
+        long total = hits.getTotalHits().value;
+        searchResult.setTotal(total);
+        // 2.2 Total Page
+        long totalPage = total / ESConstant.SEARCH_PAGE_SIZE +
+                total % ESConstant.SEARCH_PAGE_SIZE == 0 ? 0 : 1;
+        searchResult.setTotalPages((int) totalPage);
+        // 2.3 Current Page
+        searchResult.setPageNum(param.getPageNum());
+
+        Aggregations aggregations = search.getAggregations();
+        // 3. Brands Info
+        List<SearchResult.BrandVo> brands = new ArrayList<>();
+        ParsedLongTerms brandAgg = aggregations.get("brand_agg");
+        for (Terms.Bucket bucket : brandAgg.getBuckets()) {
+            Long brandId = (Long) bucket.getKey();
+            ParsedStringTerms brandNameAgg = bucket.getAggregations().get("brand_name_agg");
+            String brandName = brandNameAgg.getBuckets().get(0).getKeyAsString();
+            ParsedStringTerms brandImgAgg = bucket.getAggregations().get("brand_img_agg");
+            String brandImg = brandImgAgg.getBuckets().get(0).getKeyAsString();
+            var brand = new SearchResult.BrandVo();
+            brand.setBrandId(brandId);
+            brand.setBrandImg(brandImg);
+            brand.setBrandName(brandName);
+            brands.add(brand);
+        }
+        searchResult.setBrands(brands);
+
+        // Category Info
+        List<SearchResult.CatalogVo> catalogs = new ArrayList<>();
+        ParsedLongTerms catalogAgg = aggregations.get("catalog_agg");
+        for (Terms.Bucket bucket : catalogAgg.getBuckets()) {
+            Long catalogId = (Long) bucket.getKey();
+            ParsedStringTerms catalogNameAgg = bucket.getAggregations().get("catalog_name_agg");
+            String catalogName = catalogNameAgg.getBuckets().get(0).getKeyAsString();
+            var catalog = new SearchResult.CatalogVo();
+            catalog.setCatalogId(catalogId);
+            catalog.setCatalogName(catalogName);
+            catalogs.add(catalog);
+        }
+        searchResult.setCatalogs(catalogs);
+
+        // Attrs Info
+        List<SearchResult.AttrVo> attrs = new ArrayList<>();
+        ParsedNested attrAgg = aggregations.get("attr_agg");
+        ParsedLongTerms attrIdAgg = attrAgg.getAggregations().get("attr_id_agg");
+        for (Terms.Bucket bucket : attrIdAgg.getBuckets()) {
+            Long attrId = (Long) bucket.getKey();
+            ParsedStringTerms attrNameAgg = bucket.getAggregations().get("attr_name_agg");
+            String attrName = attrNameAgg.getBuckets().get(0).getKeyAsString();
+            ParsedStringTerms attrValueAgg = bucket.getAggregations().get("attr_value_agg");
+            List<String> attrValue = attrValueAgg.getBuckets().stream()
+                    .map(MultiBucketsAggregation.Bucket::getKeyAsString)
+                    .collect(Collectors.toList());
+            SearchResult.AttrVo attr = new SearchResult.AttrVo();
+            attr.setAttrId(attrId);
+            attr.setAttrName(attrName);
+            attr.setAttrValue(attrValue);
+            attrs.add(attr);
+        }
+        searchResult.setAttrs(attrs);
+
+
+        return searchResult;
     }
 }
