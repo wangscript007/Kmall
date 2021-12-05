@@ -8,11 +8,9 @@ import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
@@ -102,9 +100,9 @@ public class MallSearchServiceImpl implements MallSearchService {
                 String[] attrValues = new String[]{};
                 if (s.length == 2) {
                     attrId = s[0];
-                    boolQuery.must(new TermQueryBuilder("attrs.attrId", attrId));
+                    nestBoolQuery.must(new TermQueryBuilder("attrs.attrId", attrId));
                     attrValues = s[1].split(":");
-                    boolQuery.must(new TermsQueryBuilder("attrs.attrValue", attrValues));
+                    nestBoolQuery.must(new TermsQueryBuilder("attrs.attrValue", attrValues));
                 }
 
                 NestedQueryBuilder nestedQuery = new NestedQueryBuilder("attrs", nestBoolQuery, ScoreMode.None);
@@ -112,21 +110,20 @@ public class MallSearchServiceImpl implements MallSearchService {
             }
         }
         // 库存
-        boolQuery.filter(
-                new TermQueryBuilder("hasStock", Integer.valueOf(1).equals(searchParam.getHasStock()))
-        );
+        if (searchParam.getHasStock() != null) {
+            boolQuery.filter(new TermQueryBuilder("hasStock", searchParam.getHasStock() == 1));
+        }
 
         // 价格区间
         if (!StringUtils.isEmpty(searchParam.getSkuPrice())) {
             // 0_500/500_/_500
             String[] priceRange = searchParam.getSkuPrice().split("_");
             RangeQueryBuilder rangeQuery = new RangeQueryBuilder("skuPrice");
-            if (priceRange.length == 2) {
-                rangeQuery.gte(priceRange[0]).lte(priceRange[1]);
-            } else if (priceRange.length > 0 && searchParam.getSkuPrice().startsWith("_")) {
-                rangeQuery.lte(priceRange[0]);
-            } else if (priceRange.length > 0) {
+            if (!StringUtils.isEmpty(priceRange[0])) {
                 rangeQuery.gte(priceRange[0]);
+            }
+            if (!StringUtils.isEmpty(priceRange[1])) {
+                rangeQuery.lte(priceRange[1]);
             }
             boolQuery.filter(rangeQuery);
         }
@@ -194,6 +191,7 @@ public class MallSearchServiceImpl implements MallSearchService {
         // ==========================================聚合分析===========================================
 
         searchRequest.source(searchSourceBuilder);
+        System.out.println(searchRequest.source());
         return searchRequest;
     }
 
@@ -232,11 +230,16 @@ public class MallSearchServiceImpl implements MallSearchService {
         long total = hits.getTotalHits().value;
         searchResult.setTotal(total);
         // 2.2 Total Page
-        long totalPage = total / ESConstant.SEARCH_PAGE_SIZE +
-                total % ESConstant.SEARCH_PAGE_SIZE == 0 ? 0 : 1;
+        long totalPage = (total / ESConstant.SEARCH_PAGE_SIZE) + (total % ESConstant.SEARCH_PAGE_SIZE == 0 ? 0 : 1);
         searchResult.setTotalPages((int) totalPage);
         // 2.3 Current Page
         searchResult.setPageNum(param.getPageNum());
+        // 2.4 Navigation Pages
+        List<Integer> navs = new ArrayList<>();
+        for (int i = 1; i <= totalPage; i++) {
+            navs.add(i);
+        }
+        searchResult.setPageNavs(navs);
 
         Aggregations aggregations = search.getAggregations();
         // 3. Brands Info

@@ -21,11 +21,14 @@
         select `kmall_pms`.`pms_attr`.attr_id
         from kmall_pms.pms_attr
         where
-            `kmall_pms`.`pms_attr`.attr_id in (
+            <if test="attrIds != null and attrIds.size() gt 0">
+                `kmall_pms`.`pms_attr`.attr_id in (
                 <foreach collection="attrIds" item="id" separator=",">
                     #{id}
                 </foreach>
-            ) and search_type = 1
+                ) and
+            </if>
+            search_type = 1
     </select>
 
 </mapper>

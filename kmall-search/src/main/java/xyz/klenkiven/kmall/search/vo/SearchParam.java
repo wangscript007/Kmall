@@ -33,7 +33,7 @@ public class SearchParam {
      * brandld=1
      * attrs=2寸_5寸&attrs=1_白色:蓝色【属性可多选，值也可多选，按照_拼接 id与值】
      */
-    private Integer hasStock = 1;// 是否只显示有货，默认显示所有，null == 1会NullPoint异常  0/1
+    private Integer hasStock;// 是否只显示有货，默认显示所有，null == 1会NullPoint异常  0/1
     private String skuPrice;// 是否只显示有货
     private List<Long> brandId;// 品牌id，可多选
     private List<String> attrs;// 三级分类的id
