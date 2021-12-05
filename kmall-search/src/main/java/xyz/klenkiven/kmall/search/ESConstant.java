@@ -10,7 +10,7 @@ public final class ESConstant {
     /**
      * Product Service Index
      */
-    public static final String PRODUCT_INDEX = "kmall_product";
+    public static final String PRODUCT_INDEX = "k_product";
 
     /**
      * ES Query Page Size

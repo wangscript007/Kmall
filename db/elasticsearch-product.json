@@ -12,7 +12,7 @@
         "analyzer": "ik_smart"
       },
       "skuPrice": {
-        "type": "keyword"
+        "type": "double"
       },
       "skuImg": {
         "type": "keyword"
