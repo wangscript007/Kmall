@@ -30,9 +30,6 @@ import xyz.klenkiven.kmall.product.feign.WareFeignService;
 import xyz.klenkiven.kmall.product.service.*;
 import xyz.klenkiven.kmall.product.vo.*;
 
-import javax.xml.catalog.Catalog;
-import javax.xml.catalog.CatalogException;
-
 
 @Service("spuInfoService")
 @RequiredArgsConstructor

@@ -16,15 +16,17 @@
     <resultMap id="saleAttr" type="xyz.klenkiven.kmall.product.vo.SkuItemVO$SkuItemSaleAttrVO" >
         <result property="attrId" column="attr_id" />
         <result property="attrName" column="attr_name" />
-        <collection property="attrValues" ofType="java.lang.String">
-            <result column="attr_value" />
+        <collection property="attrValues" ofType="xyz.klenkiven.kmall.product.vo.SkuItemVO$SaleAttrValue">
+            <result property="attrValue" column="attr_value" />
+            <result property="skuIds" column="skuIds" />
         </collection>
     </resultMap>
     <select id="getSaleAttr" resultMap="saleAttr" >
-        select pssav.attr_id, pssav.attr_name, pssav.attr_value
+        select pssav.attr_id, pssav.attr_name, pssav.attr_value, group_concat(DISTINCT pssav.sku_id) skuIds
         from pms_sku_info si
                  left join pms_sku_sale_attr_value pssav on si.sku_id = pssav.sku_id
-        where spu_id = #{spuId};
+        where spu_id = #{spuId}
+        group by pssav.attr_id, pssav.attr_name, pssav.attr_value;
     </select>
 
 

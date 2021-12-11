@@ -20,6 +20,11 @@ public class SkuItemVO {
     SkuInfoEntity info;
 
     /**
+     * Has Stock
+     */
+    Boolean hasStock = true;
+
+    /**
      * SKU images `pms_sku_images`
      */
      private List<SkuImagesEntity> images;
@@ -56,7 +61,13 @@ public class SkuItemVO {
         /**
          * 属性值
          */
-        private List<String> attrValues;
+        private List<SaleAttrValue> attrValues;
+    }
+
+    @Data
+    public static class SaleAttrValue {
+        private String attrValue;
+        private String skuIds;
     }
 
     /**
