@@ -164,6 +164,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                     SkuSaleAttrValueEntity skuSaleAttrValueEntity = new SkuSaleAttrValueEntity();
                     BeanUtils.copyProperties(attr, skuSaleAttrValueEntity);
                     skuSaleAttrValueEntity.setSkuId(skuInfoEntity.getSkuId());
+                    skuSaleAttrValueEntity.setAttrId((long) attr.getAttrId());
                     skuSaleAttrValueService.save(skuSaleAttrValueEntity);
                 });
             }
