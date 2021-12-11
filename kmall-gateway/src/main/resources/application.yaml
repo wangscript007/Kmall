@@ -74,4 +74,4 @@ spring:
         - id: kmall_host
           uri: lb://kmall-product
           predicates:
-            - Host=kmall.com
+            - Host=kmall.com, item.kmall.com

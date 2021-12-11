@@ -1194,7 +1194,7 @@
                                 <a href="/static/search/#">关注</a>
                             </div>
                             <p class="da">
-                                <a href="/static/search/#">
+                                <a th:href="'http://item.kmall.com/' + ${product.skuId} + '.html'">
                                     <img th:src="${product.getSkuImg()}" class="dim">
                                 </a>
                             </p>
@@ -1207,7 +1207,7 @@
                                 <span th:text="'￥'+${product.getSkuPrice()}">¥5199.00</span>
                             </p>
                             <p class="tab_JE">
-                                <a href="/static/search/#" th:utext="${product.getSkuTitle()}">
+                                <a th:href="'http://item.kmall.com/' + ${product.skuId} + '.html'" th:utext="${product.getSkuTitle()}">
                                     Apple iPhone 7 Plus (A1661) 32G 黑色 移动联通电信4G手机
                                 </a>
                             </p>
