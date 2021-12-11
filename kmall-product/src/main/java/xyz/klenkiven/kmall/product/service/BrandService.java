@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.product.entity.BrandEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,5 +23,13 @@ public interface BrandService extends IService<BrandEntity> {
      * @param brand brand
      */
     void updateDetailById(BrandEntity brand);
+
+    /**
+     * Get Brand entities by ids
+     * For Feign from search service
+     * @param brandIds brandIds
+     * @return entities
+     */
+    List<BrandEntity> getBrandByIds(List<Long> brandIds);
 }
 

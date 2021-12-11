@@ -8,6 +8,8 @@ import xyz.klenkiven.kmall.search.service.MallSearchService;
 import xyz.klenkiven.kmall.search.vo.SearchParam;
 import xyz.klenkiven.kmall.search.vo.SearchResult;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Search Page Controller
  * @author klenkiven
@@ -19,7 +21,9 @@ public class SearchController {
     private final MallSearchService mallSearchService;
 
     @GetMapping("/list.html")
-    public String listPage(SearchParam searchParam, Model model) {
+    public String listPage(SearchParam searchParam, Model model, HttpServletRequest request) {
+        String queryString = request.getQueryString();
+        searchParam.set_queryString(queryString);
         SearchResult result = mallSearchService.search(searchParam);
         model.addAttribute("result", result);
         return "list";

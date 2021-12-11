@@ -5,8 +5,6 @@ import org.apache.http.HttpStatus;
 import xyz.klenkiven.kmall.common.exception.ExceptionCodeEnum;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Generalized Result

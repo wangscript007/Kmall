@@ -1,7 +1,11 @@
 package xyz.klenkiven.kmall.search.service.impl;
 
+import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.join.ScoreMode;
@@ -26,15 +30,24 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
 import xyz.klenkiven.kmall.common.to.elasticsearch.SkuESModel;
+import xyz.klenkiven.kmall.common.utils.R;
+import xyz.klenkiven.kmall.common.utils.Result;
 import xyz.klenkiven.kmall.search.ESConstant;
 import xyz.klenkiven.kmall.search.config.KmallElasticSearchConfig;
+import xyz.klenkiven.kmall.search.feign.ProductFeignService;
 import xyz.klenkiven.kmall.search.service.MallSearchService;
+import xyz.klenkiven.kmall.search.vo.AttrResponseVO;
+import xyz.klenkiven.kmall.search.vo.BrandVO;
 import xyz.klenkiven.kmall.search.vo.SearchParam;
 import xyz.klenkiven.kmall.search.vo.SearchResult;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +59,8 @@ import java.util.stream.Collectors;
 public class MallSearchServiceImpl implements MallSearchService {
 
     private final RestHighLevelClient esClient;
+    private final ProductFeignService productFeignService;
+
 
     @Override
     public SearchResult search(SearchParam searchParam) {
@@ -235,11 +250,11 @@ public class MallSearchServiceImpl implements MallSearchService {
         // 2.3 Current Page
         searchResult.setPageNum(param.getPageNum());
         // 2.4 Navigation Pages
-        List<Integer> navs = new ArrayList<>();
+        List<Integer> navPages = new ArrayList<>();
         for (int i = 1; i <= totalPage; i++) {
-            navs.add(i);
+            navPages.add(i);
         }
-        searchResult.setPageNavs(navs);
+        searchResult.setPageNavs(navPages);
 
         Aggregations aggregations = search.getAggregations();
         // 3. Brands Info
@@ -293,7 +308,83 @@ public class MallSearchServiceImpl implements MallSearchService {
         }
         searchResult.setAttrs(attrs);
 
+        // Bread Navigation
+        if (param.getAttrs() != null && param.getAttrs().size() > 0) {
+            List<SearchResult.NavVo> navs = param.getAttrs().stream().map((attr -> {
+                SearchResult.NavVo nav = new SearchResult.NavVo();
+                String[] s = attr.split("_");
+                // attrs=1_白色:蓝色
+                nav.setNavValue(s[1]);
+                if (!StringUtils.isEmpty(s[0])) {
+                    Long attrId = Long.parseLong(s[0]);
+                    R r = productFeignService.attrInfo(attrId);
+                    searchResult.getAttrIds().add(attrId);
+                    if (r.getCode() == 0) {
+                        AttrResponseVO responseVO = getData(r.get("attr"), new TypeReference<AttrResponseVO>() {
+                        });
+                        nav.setNavName(responseVO.getAttrName());
+                    } else {
+                        nav.setNavName(s[0]);
+                    }
+                }
+                String replace = replaceQueryString(param, attr, "attrs");
+                nav.setLink("http://search.kmall.com/list.html?" + replace);
+                return nav;
+            })).collect(Collectors.toList());
+            searchResult.setNavs(navs);
+        }
+
+        // 品牌、分类
+        if (param.getBrandId() != null && param.getBrandId().size() > 0) {
+            List<SearchResult.NavVo> navs = searchResult.getNavs();
+            SearchResult.NavVo navVo = new SearchResult.NavVo();
+            navVo.setNavName("品牌");
+            // TODO 远程查询所有品牌
+            Result<List<BrandVO>> r = productFeignService.brandsInfo(param.getBrandId());
+            if (r.getCode() == 0) {
+                List<BrandVO> brand = r.getData();
+                StringBuilder sb = new StringBuilder();
+                String replace = "";
+                for (BrandVO brandVo : brand) {
+                    sb.append(brandVo.getName()).append(";");
+                    replace = replaceQueryString(param, brandVo.getBrandId()+"", "brandId");
+                }
+                navVo.setNavValue(sb.toString());
+                navVo.setLink("http://search.kmall.com/list.html?" + replace);
+            }
+            navs.add(navVo);
+        }
 
         return searchResult;
+    }
+
+    /**
+     * Get Object By JSON
+     */
+    private <T> T getData(Object data, TypeReference<T> typeReference) {
+        JsonMapper jsonMapper = new JsonMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = "";
+        T result = null;
+        try {
+            json = jsonMapper.writeValueAsString(data);
+            result = objectMapper.readValue(json, typeReference);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * Replace Query String
+     */
+    private String replaceQueryString(SearchParam param, String value, String key) {
+        String encode = null;
+        encode = URLEncoder.encode(value, StandardCharsets.UTF_8);
+        encode = encode.replace("+", "%20");  //浏览器对空格的编码和Java不一样，差异化处理
+        // 就是点了X之后，应该跳转的地址
+        // 这里要判断一下，attrs是不是第一个参数，因为第一个参数 没有&符号
+        // TODO BUG，第一个参数不带&
+        return param.get_queryString().replace("&"+ key + "=" + encode, "");
     }
 }

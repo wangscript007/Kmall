@@ -1,16 +1,14 @@
 package xyz.klenkiven.kmall.product.app;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import xyz.klenkiven.kmall.common.utils.Result;
 import xyz.klenkiven.kmall.common.valid.AddGroup;
 import xyz.klenkiven.kmall.common.valid.UpdateGroup;
 import xyz.klenkiven.kmall.product.entity.BrandEntity;
@@ -43,6 +41,14 @@ public class BrandController {
         return R.ok().put("page", page);
     }
 
+    /**
+     * Get info list
+     */
+    @GetMapping("/infos")
+    public Result<List<BrandEntity>> infos(@RequestParam("brandIds") List<Long> brandIds) {
+        List<BrandEntity> brandEntities = brandService.getBrandByIds(brandIds);
+        return Result.ok(brandEntities);
+    }
 
     /**
      * 信息

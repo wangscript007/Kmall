@@ -763,6 +763,11 @@
             </div>
         </div>
         <i><img src="/static/search/image/right-@1x.png" alt=""></i>
+        <div class="JD_ipone_one c">
+            <!-- 遍历面包屑功能 -->
+            <a th:href="${nav.link}" th:each="nav:${result.navs}"><span th:text="${nav.navName}"></span>：<span th:text="${nav.navValue}"></span> x</a>
+        </div>
+        <i><img src="/static/search/image/right-@1x.png" alt=""></i>
     </div>
 </div>
 
@@ -775,9 +780,9 @@
                 <h3><b>手机</b><em>商品筛选</em></h3>
                 <div class="st-ext">共&nbsp;<span>10135</span>个商品 </div>
             </div>
-            <div class="JD_nav_logo">
+            <div class="JD_nav_logo" th:with="brandId=${param.brandId}" >
                 <!--品牌-->
-                <div class="JD_nav_wrap">
+                <div th:if="${#strings.isEmpty(brandId)}" class="JD_nav_wrap">
                     <div class="sl_key">
                         <span>品牌：</span>
                     </div>
@@ -838,7 +843,8 @@
                     </div>
                 </div>
                 <!--Attributes-->
-                <div class="JD_pre" th:each="attr:${result.getAttrs()}">
+                <div class="JD_pre" th:each="attr:${result.getAttrs()}"
+                     th:if="${!#lists.contains(result.getAttrIds(), attr.getAttrId())}">
                     <div class="sl_key">
                         <span th:text="${attr.getAttrName()}">屏幕尺寸：</span>
                     </div>
@@ -1995,12 +2001,14 @@
 
     // Search Query
     function searchParam(name, val) {
-        var herf = location.href + ""
-        if (herf.indexOf('?') !== -1) {
-            location.href = location.href + "&" + name + "=" + val;
-        } else {
-            location.href = location.href + "?" + name + "=" + val;
-        }
+        // var herf = location.href + ""
+        // if (herf.indexOf('?') !== -1) {
+        //     location.href = location.href + "&" + name + "=" + val;
+        // } else {
+        //     location.href = location.href + "?" + name + "=" + val;
+        // }
+        let herf = location.href
+        location.href = replaceParamVal(herf, name, val, herf.indexOf(val) === -1)
     }
 
     // Keyword Search
