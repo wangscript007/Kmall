@@ -44,6 +44,11 @@ mybatis-plus:
       # 主键自增策略
       id-type: AUTO
 
+kmall.thread:
+  idle: 50
+  maxSize: 200
+  keepAlive: 20
+
 logging:
   level:
     xyz.klenkiven: error
