@@ -13,5 +13,20 @@
         <result property="catelogId" column="catelog_id"/>
     </resultMap>
 
+    <resultMap id="baseAttrGroup" type="xyz.klenkiven.kmall.product.vo.SkuItemVO$SpuItemBaseGroupAttrVO">
+        <result column="attr_group_name" property="groupName" />
+        <collection property="baseAttrs" ofType="xyz.klenkiven.kmall.product.vo.SkuItemVO$SpuBaseAttrVO">
+            <result column="attr_name" property="attrName" />
+            <result column="attr_value" property="attrValue" />
+        </collection>
+    </resultMap>
+    <select id="getBaseAttrGroup" resultMap="baseAttrGroup">
+        select ag.attr_group_name, ag.attr_group_id, aar.attr_id, attr.attr_name, pav.attr_value
+        from pms_attr_group ag
+                 left join pms_attr_attrgroup_relation aar on ag.attr_group_id = aar.attr_group_id
+                 left join pms_attr attr on aar.attr_id = attr.attr_id
+                 left join pms_product_attr_value pav on aar.attr_id = pav.attr_id
+        where ag.catelog_id = #{catalogId} and pav.spu_id = #{spuId}
+    </select>
 
 </mapper>

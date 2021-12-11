@@ -13,5 +13,19 @@
         <result property="attrSort" column="attr_sort"/>
     </resultMap>
 
+    <resultMap id="saleAttr" type="xyz.klenkiven.kmall.product.vo.SkuItemVO$SkuItemSaleAttrVO" >
+        <result property="attrId" column="attr_id" />
+        <result property="attrName" column="attr_name" />
+        <collection property="attrValues" ofType="java.lang.String">
+            <result column="attr_value" />
+        </collection>
+    </resultMap>
+    <select id="getSaleAttr" resultMap="saleAttr" >
+        select pssav.attr_id, pssav.attr_name, pssav.attr_value
+        from pms_sku_info si
+                 left join pms_sku_sale_attr_value pssav on si.sku_id = pssav.sku_id
+        where spu_id = #{spuId};
+    </select>
+
 
 </mapper>

@@ -3,6 +3,9 @@ package xyz.klenkiven.kmall.product.dao;
 import xyz.klenkiven.kmall.product.entity.SkuSaleAttrValueEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import xyz.klenkiven.kmall.product.vo.SkuItemVO;
+
+import java.util.List;
 
 /**
  * sku销售属性&值
@@ -13,5 +16,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SkuSaleAttrValueDao extends BaseMapper<SkuSaleAttrValueEntity> {
-	
+
+    List<SkuItemVO.SkuItemSaleAttrVO> getSaleAttr(Long spuId);
 }

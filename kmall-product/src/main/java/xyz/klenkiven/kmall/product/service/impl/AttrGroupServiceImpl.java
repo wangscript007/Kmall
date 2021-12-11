@@ -27,6 +27,7 @@ import xyz.klenkiven.kmall.product.service.CategoryService;
 import xyz.klenkiven.kmall.product.vo.AttrGroupRespVO;
 import xyz.klenkiven.kmall.product.vo.AttrRelationVO;
 import xyz.klenkiven.kmall.product.vo.AttrVO;
+import xyz.klenkiven.kmall.product.vo.SkuItemVO;
 
 
 @Service("attrGroupService")
@@ -151,6 +152,12 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
                     attrGroup.setAttrs(attrs);
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SkuItemVO.SpuItemBaseGroupAttrVO> getBaseAttrGroup(Long spuId, Long catalogId) {
+        AttrGroupDao attrGroupDao = this.baseMapper;
+        return attrGroupDao.getBaseAttrGroup(spuId, catalogId);
     }
 
 }

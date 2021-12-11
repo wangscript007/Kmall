@@ -3,6 +3,9 @@ package xyz.klenkiven.kmall.product.dao;
 import xyz.klenkiven.kmall.product.entity.AttrGroupEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import xyz.klenkiven.kmall.product.vo.SkuItemVO;
+
+import java.util.List;
 
 /**
  * 属性分组
@@ -13,5 +16,9 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AttrGroupDao extends BaseMapper<AttrGroupEntity> {
-	
+
+    /**
+     * Get base Attribute by Group
+     */
+    List<SkuItemVO.SpuItemBaseGroupAttrVO> getBaseAttrGroup(Long spuId, Long catalogId);
 }

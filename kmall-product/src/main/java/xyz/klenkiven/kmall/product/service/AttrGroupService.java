@@ -6,6 +6,7 @@ import xyz.klenkiven.kmall.product.entity.AttrGroupEntity;
 import xyz.klenkiven.kmall.product.vo.AttrGroupRespVO;
 import xyz.klenkiven.kmall.product.vo.AttrRelationVO;
 import xyz.klenkiven.kmall.product.vo.AttrVO;
+import xyz.klenkiven.kmall.product.vo.SkuItemVO;
 
 import java.util.List;
 import java.util.Map;
@@ -51,5 +52,10 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
      * Get all attribute groups that belong to certain catalog
      */
     List<AttrGroupRespVO> listAttrGroup(Long catalogId);
+
+    /**
+     * Get Base Attribute VO
+     */
+    List<SkuItemVO.SpuItemBaseGroupAttrVO> getBaseAttrGroup(Long spuId, Long catalogId);
 }
 
