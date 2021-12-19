@@ -4985,27 +4985,12 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 		</div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		<header>
-			<a href="/static/reg/https://www.jd.com/?cu=true&utm_source=haosou-pinzhuan&utm_medium=cpc&utm_campaign=t_288551095_haosoupinzhuan&utm_term=0a875d61c5fe47d8bc48679132932d23_0_2702c6f4ae1c4cd191c1ee4398e2e21b" class="logo"><img src="/static/reg/img/logo1.jpg" alt=""></a>
+			<a href="http://kmall.com/" class="logo"><img src="/static/reg/img/logo1.jpg" alt=""></a>
 			<div class="desc">欢迎注册</div>
 			<div class="dfg">
 				<span>已有账号？</span>
-				<a href="/static/reg/">请登录</a>
+				<a href="/login.html">请登录</a>
 			</div>
 		</header>
 		<section>
@@ -5045,12 +5030,9 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 				</div>
 				<div class="register-box">
 					<label for="username" class="other_label">验 证 码
-			<input maxlength="20" type="text" placeholder="请输入验证码" class="caa">
-			</label>
-					<span id="code"></span>
-					<div class="tips">
-
-					</div>
+						<input maxlength="20" type="text" placeholder="请输入验证码" class="caa">
+					</label>
+					<a id="sendCode"> Send Code </a>
 				</div>
 				<div class="arguement">
 					<input type="checkbox" id="xieyi"> 阅读并同意
@@ -5302,6 +5284,29 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 			$(".cuo").click(function() {
 				$(".zong").hide();
 			});
+
+			$(function() {
+				// 1. Send code to phone
+				// 2. Press this link
+				$("#sendCode").click(function () {
+					if (!$("#sendCode").hasClass("disabled")) {
+						changeStyle();
+					}
+				})
+			});
+			let num = 10;
+			function changeStyle() {
+				if (num === 0) {
+					$("#sendCode").text("re-send code")
+							.attr("class", "")
+					num = 10;
+				} else {
+					num--;
+					$("#sendCode").attr("class", "disabled")
+							.text(num + "s to re-send")
+					setTimeout("changeStyle()", 1000)
+				}
+			}
 		</script>
 	</body>
 
