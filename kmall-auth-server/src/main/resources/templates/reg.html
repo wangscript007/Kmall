@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 	<head>
 		<meta charset="utf-8" />
@@ -4994,45 +4994,48 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 			</div>
 		</header>
 		<section>
-			<form action="" class="one">
+			<form action="/register" method="post" class="one">
 				<div class="register-box">
-					<label for="username" class="username_label">用 户 名
-			<input maxlength="20" type="text" placeholder="您的用户名和登录名" >
+					<label class="username_label">用 户 名
+			<input maxlength="20" name="username" type="text" placeholder="您的用户名和登录名" >
 					</label>
-					<div class="tips">
+					<div class="tips" style="color: red" th:text="${errors!=null ? (#maps.containsKey(errors, 'username') ? errors.username : '') : ''}">
 
 					</div>
 				</div>
 				<div class="register-box">
-					<label for="username" class="other_label">设 置 密 码
-			<input maxlength="20" type="password" placeholder="建议至少使用两种字符组合">
+					<label class="other_label">设 置 密 码
+			<input maxlength="20" name="password" type="password" placeholder="建议至少使用两种字符组合">
 			</label>
-					<div class="tips">
+					<div class="tips" style="color: red" th:text="${errors!=null ? (#maps.containsKey(errors, 'password]') ? errors.password : '') : ''}">
 
 					</div>
 				</div>
 				<div class="register-box">
-					<label for="username" class="other_label">确 认 密 码
-			<input maxlength="20" type="password" placeholder="请再次输入密码">
+					<label class="other_label">确 认 密 码
+			<input maxlength="20" placeholder="请再次输入密码">
 			</label>
-					<div class="tips">
+					<div class="tips" style="color: red" th:text="${errors!=null ? (#maps.containsKey(errors, 'password]') ? errors.password : '') : ''}">
 
 					</div>
 				</div>
 				<div class="register-box">
-					<label for="username" class="other_label">
+					<label class="other_label">
 			<span>中国 0086∨</span>
-			<input class="phone" maxlength="20" type="text" placeholder="建议使用常用手机">
+			<input class="phone" name="phone" maxlength="20" type="text" placeholder="建议使用常用手机">
 			</label>
-					<div class="tips">
+					<div class="tips" style="color: red" th:text="${errors!=null ? (#maps.containsKey(errors, 'phone') ? errors.phone : '') : ''}">
 
 					</div>
 				</div>
 				<div class="register-box">
-					<label for="username" class="other_label">验 证 码
-						<input maxlength="20" type="text" placeholder="请输入验证码" class="caa">
+					<label class="other_label">验 证 码
+						<input maxlength="20" name="code" type="text" placeholder="请输入验证码" class="caa">
 					</label>
 					<a id="sendCode"> Send Code </a>
+					<div class="tips" style="color: red" th:text="${errors!=null ? (#maps.containsKey(errors, 'code') ? errors.code : '') : ''}">
+
+					</div>
 				</div>
 				<div class="arguement">
 					<input type="checkbox" id="xieyi"> 阅读并同意
@@ -5043,7 +5046,7 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 					</div>
 					<br />
 					<div class="submit_btn">
-						<button type="submit" id="submit_btn">立 即 注 册</button>
+						<button type="submit">立 即 注 册</button>
 					</div>
 				</div>
 
@@ -5227,37 +5230,37 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 						}
 					})
 					//	提交按钮
-				$("#submit_btn").click(function(e) {
-					for(var j = 0; j < 5; j++) {
-						if($('input').eq(j).val().length == 0) {
-							$('input').eq(j).focus();
-							if(j == 4) {
-								$('input').eq(j).parent().next().next("div").text("此处不能为空");
-								$('input').eq(j).parent().next().next("div").css("color", 'red');
-								e.preventDefault();
-								return;
-							}
-							$('input').eq(j).parent().next(".tips").text("此处不能为空");
-							$('input').eq(j).parent().next(".tips").css("color", 'red');
-							e.preventDefault();
-							return;
-						}
-					}
-					//协议
-					if($("#xieyi")[0].checked) {
-						//向变量stuList数组添加一个数值，数值内部格式Student(name,password,tel,id)
-						//发送用户信息
-						stuList.push(new Student($('input').eq(0).val(), $('input').eq(1).val(), $('input').eq(3).val(), stuList.length + 1));
-						localStorage.setItem('stuList', JSON.stringify(stuList));
-						alert("注册成功");
-						window.open("userlist.html", "_blank");
-					} else {
-						$("#xieyi").next().next().next(".tips").text("请勾选协议");
-						$("#xieyi").next().next().next(".tips").css("color", 'red');
-						e.preventDefault();
-						return;
-					}
-				})
+				// $("#submit_btn").click(function(e) {
+				// 	for(var j = 0; j < 5; j++) {
+				// 		if($('input').eq(j).val().length == 0) {
+				// 			$('input').eq(j).focus();
+				// 			if(j == 4) {
+				// 				$('input').eq(j).parent().next().next("div").text("此处不能为空");
+				// 				$('input').eq(j).parent().next().next("div").css("color", 'red');
+				// 				e.preventDefault();
+				// 				return;
+				// 			}
+				// 			$('input').eq(j).parent().next(".tips").text("此处不能为空");
+				// 			$('input').eq(j).parent().next(".tips").css("color", 'red');
+				// 			e.preventDefault();
+				// 			return;
+				// 		}
+				// 	}
+				// 	//协议
+				// 	if($("#xieyi")[0].checked) {
+				// 		//向变量stuList数组添加一个数值，数值内部格式Student(name,password,tel,id)
+				// 		//发送用户信息
+				// 		stuList.push(new Student($('input').eq(0).val(), $('input').eq(1).val(), $('input').eq(3).val(), stuList.length + 1));
+				// 		localStorage.setItem('stuList', JSON.stringify(stuList));
+				// 		alert("注册成功");
+				// 		window.open("userlist.html", "_blank");
+				// 	} else {
+				// 		$("#xieyi").next().next().next(".tips").text("请勾选协议");
+				// 		$("#xieyi").next().next().next(".tips").css("color", 'red');
+				// 		e.preventDefault();
+				// 		return;
+				// 	}
+				// })
 
 				//  建立构造函数，构造学生信息模板
 				function Student(name, password, tel, id) {
@@ -5290,16 +5293,22 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 				// 2. Press this link
 				$("#sendCode").click(function () {
 					if (!$("#sendCode").hasClass("disabled")) {
+						// Send code to phone
+						$.get("/sms/sendCode?phone=" + $("#phoneNum").val(), function (data) {
+							if (data.code !== 0) {
+								alert(data.msg);
+							}
+						})
 						changeStyle();
 					}
 				})
 			});
-			let num = 10;
+			let num = 60;
 			function changeStyle() {
 				if (num === 0) {
 					$("#sendCode").text("re-send code")
 							.attr("class", "")
-					num = 10;
+					num = 60;
 				} else {
 					num--;
 					$("#sendCode").attr("class", "disabled")
