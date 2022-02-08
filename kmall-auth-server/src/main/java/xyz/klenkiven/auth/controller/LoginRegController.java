@@ -51,7 +51,7 @@ public class LoginRegController {
             }
         }
         // Do Send Message
-        int randomCode = UUID.randomUUID().hashCode() % 1000000;
+        int randomCode = Math.abs(UUID.randomUUID().hashCode() % 1000000);
         thirdParty.sendCode(phone, String.valueOf(randomCode));
         redisTemplate.opsForValue().set(SMSConstant.SMS_CODE_PREFIX + phone,
                 randomCode + "_" + System.currentTimeMillis(),

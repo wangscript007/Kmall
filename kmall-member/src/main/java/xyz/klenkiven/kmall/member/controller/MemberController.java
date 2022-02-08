@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import xyz.klenkiven.kmall.common.exception.ExceptionCodeEnum;
 import xyz.klenkiven.kmall.common.utils.Result;
 import xyz.klenkiven.kmall.member.entity.MemberEntity;
 import xyz.klenkiven.kmall.member.exception.MobileExistException;
@@ -50,8 +51,12 @@ public class MemberController {
         // Check for exist
         try {
             memberService.register(vo);
-        } catch (UsernameExistException | MobileExistException e) {
-            return Result.error(e.getMessage());
+        } catch (UsernameExistException e) {
+            return Result.error(ExceptionCodeEnum.USERNAME_EXIST_ERROR.getCode(),
+                    ExceptionCodeEnum.USERNAME_EXIST_ERROR.getMessage());
+        } catch (MobileExistException e) {
+            return Result.error(ExceptionCodeEnum.PHONE_EXIST_ERROR.getCode(),
+                    ExceptionCodeEnum.PHONE_EXIST_ERROR.getMessage());
         }
 
         return Result.ok();

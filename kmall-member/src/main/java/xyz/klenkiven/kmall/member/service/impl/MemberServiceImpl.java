@@ -1,5 +1,8 @@
 package xyz.klenkiven.kmall.member.service.impl;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -44,6 +47,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         checkUsernameUnique(vo.getUsername());
         member.setMobile(vo.getPhone());
         member.setUsername(vo.getUsername());
+
+        // Save Password By BCrypt
+        PasswordEncoder bCrypt = new BCryptPasswordEncoder();
+        member.setPassword(bCrypt.encode(vo.getPassword()));
+
 
         // Others
         member.setCreateTime(new Date());
