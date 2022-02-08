@@ -4,18 +4,17 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import xyz.klenkiven.kmall.common.utils.Result;
 import xyz.klenkiven.kmall.member.entity.MemberEntity;
+import xyz.klenkiven.kmall.member.exception.MobileExistException;
+import xyz.klenkiven.kmall.member.exception.UsernameExistException;
 import xyz.klenkiven.kmall.member.feign.CouponFeignService;
 import xyz.klenkiven.kmall.member.service.MemberService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
-
+import xyz.klenkiven.kmall.member.vo.RegFeignVO;
 
 
 /**
@@ -41,6 +40,21 @@ public class MemberController {
 
         R memberCoupons = couponFeignService.memberCoupons();
         return R.ok().put("member", memberEntity).put("coupons", memberCoupons.get("coupons"));
+    }
+
+    /**
+     * [FEIGN] ] Register Service
+     */
+    @PostMapping("register")
+    public Result<?> register(@RequestBody RegFeignVO vo) {
+        // Check for exist
+        try {
+            memberService.register(vo);
+        } catch (UsernameExistException | MobileExistException e) {
+            return Result.error(e.getMessage());
+        }
+
+        return Result.ok();
     }
 
     /**

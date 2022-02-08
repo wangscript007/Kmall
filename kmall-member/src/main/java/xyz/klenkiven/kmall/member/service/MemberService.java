@@ -3,6 +3,7 @@ package xyz.klenkiven.kmall.member.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.member.entity.MemberEntity;
+import xyz.klenkiven.kmall.member.vo.RegFeignVO;
 
 import java.util.Map;
 
@@ -16,5 +17,11 @@ import java.util.Map;
 public interface MemberService extends IService<MemberEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * Register Member
+     * @param vo member info
+     */
+    void register(RegFeignVO vo);
 }
 

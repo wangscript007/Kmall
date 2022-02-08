@@ -28,5 +28,15 @@
         <result property="expiresIn" column="expires_in"/>
     </resultMap>
 
+    <!-- Check for unique -->
+    <select id="checkUnique" resultType="java.lang.Integer">
+        select count(*) from kmall_ums.ums_member
+        where ${col} = #{val}
+    </select>
+    <select id="getDefaultLevel" resultType="java.lang.Long">
+        select `id` from kmall_ums.ums_member_level
+        where default_status = 1
+    </select>
+
 
 </mapper>

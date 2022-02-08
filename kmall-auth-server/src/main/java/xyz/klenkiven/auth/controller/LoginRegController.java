@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import xyz.klenkiven.auth.feign.MemberFeignService;
 import xyz.klenkiven.auth.feign.ThirdPartyFeignService;
 import xyz.klenkiven.auth.vo.RegForm;
 import xyz.klenkiven.kmall.common.constant.SMSConstant;
+import xyz.klenkiven.kmall.common.exception.ExceptionCodeEnum;
 import xyz.klenkiven.kmall.common.utils.Result;
 
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -33,6 +36,7 @@ public class LoginRegController {
 
     private final ThirdPartyFeignService thirdParty;
     private final StringRedisTemplate redisTemplate;
+    private final MemberFeignService memberFeignService;
 
     @GetMapping("/sms/sendCode")
     @ResponseBody
@@ -56,7 +60,7 @@ public class LoginRegController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid RegForm from, BindingResult result,
+    public String register(@Valid RegForm regForm, BindingResult result,
                            RedirectAttributes attributes) {
         // If form has validation errors, redirect to register page
         if (result.hasErrors()) {
@@ -72,7 +76,31 @@ public class LoginRegController {
             attributes.addFlashAttribute("errors", errors);
             return "redirect:http://auth.kmall.com/reg.html";
         }
-        // Do Register with Other Service
+
+        // Valid Code && Do Register with Other Service
+        String code = regForm.getCode();
+        String s = redisTemplate.opsForValue().get(SMSConstant.SMS_CODE_PREFIX + regForm.getPhone());
+        redisTemplate.delete(SMSConstant.SMS_CODE_PREFIX + regForm.getPhone());
+
+        if (!StringUtils.isEmpty(s) && code.equals(s.split("_")[0])) {
+            // Do Register Process
+            Result<?> register = memberFeignService.register(regForm);
+            Map<String, String> errors = new HashMap<>();
+            if (Objects.equals(register.getCode(), ExceptionCodeEnum.USERNAME_EXIST_ERROR.getCode())) {
+                errors.put("username", ExceptionCodeEnum.USERNAME_EXIST_ERROR.getMessage());
+                attributes.addFlashAttribute("errors", errors);
+                return "redirect:http://auth.kmall.com/reg.html";
+            } else if (Objects.equals(register.getCode(), ExceptionCodeEnum.PHONE_EXIST_ERROR.getCode())) {
+                errors.put("phone", ExceptionCodeEnum.PHONE_EXIST_ERROR.getMessage());
+                attributes.addFlashAttribute("errors", errors);
+                return "redirect:http://auth.kmall.com/reg.html";
+            }
+        } else {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("code", "Code is false or has been over time.");
+            attributes.addFlashAttribute("errors", errors);
+            return "redirect:http://auth.kmall.com/reg.html";
+        }
 
 
         // Register success
