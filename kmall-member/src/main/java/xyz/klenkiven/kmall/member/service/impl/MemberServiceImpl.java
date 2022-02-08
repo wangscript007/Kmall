@@ -18,6 +18,7 @@ import xyz.klenkiven.kmall.member.entity.MemberEntity;
 import xyz.klenkiven.kmall.member.exception.MobileExistException;
 import xyz.klenkiven.kmall.member.exception.UsernameExistException;
 import xyz.klenkiven.kmall.member.service.MemberService;
+import xyz.klenkiven.kmall.member.vo.MemberLoginVO;
 import xyz.klenkiven.kmall.member.vo.RegFeignVO;
 
 
@@ -57,6 +58,17 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         member.setCreateTime(new Date());
 
         baseMapper.insert(member);
+    }
+
+    @Override
+    public MemberEntity login(MemberLoginVO vo) {
+        MemberEntity member = baseMapper.selectUserByAccount(vo.getAccount());
+        BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder();
+        // Authorization
+        if (member != null && bCrypt.matches(vo.getPassword(), member.getPassword())) {
+            return member;
+        }
+        return null;
     }
 
     private void checkUsernameUnique(String username) {

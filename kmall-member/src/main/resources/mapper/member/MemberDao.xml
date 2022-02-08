@@ -37,6 +37,10 @@
         select `id` from kmall_ums.ums_member_level
         where default_status = 1
     </select>
+    <select id="selectUserByAccount" resultType="xyz.klenkiven.kmall.member.entity.MemberEntity">
+        select * from kmall_ums.ums_member
+        where username = #{account} or mobile = #{account}
+    </select>
 
 
 </mapper>

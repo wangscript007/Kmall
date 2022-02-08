@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import xyz.klenkiven.auth.feign.MemberFeignService;
 import xyz.klenkiven.auth.feign.ThirdPartyFeignService;
 import xyz.klenkiven.auth.vo.RegForm;
+import xyz.klenkiven.auth.vo.UserLoginForm;
 import xyz.klenkiven.kmall.common.constant.SMSConstant;
 import xyz.klenkiven.kmall.common.exception.ExceptionCodeEnum;
 import xyz.klenkiven.kmall.common.utils.Result;
@@ -38,6 +39,9 @@ public class LoginRegController {
     private final StringRedisTemplate redisTemplate;
     private final MemberFeignService memberFeignService;
 
+    /**
+     * SMS code sender
+     */
     @GetMapping("/sms/sendCode")
     @ResponseBody
     public Result<?> sendCode(@RequestParam("phone") String phone) {
@@ -59,6 +63,9 @@ public class LoginRegController {
         return Result.ok();
     }
 
+    /**
+     * User Register
+     */
     @PostMapping("/register")
     public String register(@Valid RegForm regForm, BindingResult result,
                            RedirectAttributes attributes) {
@@ -105,6 +112,30 @@ public class LoginRegController {
 
         // Register success
         return "redirect:http://auth.kmall.com/login.html";
+    }
+
+    @PostMapping("/login")
+    public String login(@Valid UserLoginForm form, BindingResult result,
+                        RedirectAttributes attributes) {
+        // If form has validation errors, redirect to register page
+        if (result.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("msg", "Account or Password MUST not be empty");
+            attributes.addFlashAttribute("errors", errors);
+            return "redirect:http://auth.kmall.com/login.html";
+        }
+
+        // Remote Login
+        Result<?> login = memberFeignService.login(form);
+        if (login.getCode().equals(ExceptionCodeEnum.USERNAME_PASSWORD_INVALID.getCode())) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("msg", ExceptionCodeEnum.USERNAME_PASSWORD_INVALID.getMessage());
+            attributes.addFlashAttribute("errors", errors);
+            return "redirect:http://auth.kmall.com/login.html";
+        }
+
+        // TODO Login Success
+        return "redirect:http://kmall.com/";
     }
 
 }

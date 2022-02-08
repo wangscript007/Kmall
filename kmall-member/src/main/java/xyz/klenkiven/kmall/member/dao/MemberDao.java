@@ -27,4 +27,11 @@ public interface MemberDao extends BaseMapper<MemberEntity> {
      * Get User's Default Level
      */
     Long getDefaultLevel();
+
+    /**
+     * Get Member by Username, Phone or Email
+     * @param account account
+     * @return member info
+     */
+    MemberEntity selectUserByAccount(@Param("account") String account);
 }

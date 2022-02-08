@@ -21,10 +21,13 @@ public enum ExceptionCodeEnum {
     USERNAME_EXIST_ERROR(150001, "Username has existed"),
 
     /** Phone Exist Error */
-    PHONE_EXIST_ERROR(150002, "Phone has existed");
+    PHONE_EXIST_ERROR(150002, "Phone has existed"),
 
-    Integer code;
-    String message;
+    /** Username or Password Invalid */
+    USERNAME_PASSWORD_INVALID(150003, "Username or Password is invalid");
+
+    final Integer code;
+    final String message;
     ExceptionCodeEnum(Integer code, String message) {
         this.code = code;
         this.message = message;

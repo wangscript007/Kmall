@@ -5007,7 +5007,7 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 					<label class="other_label">设 置 密 码
 			<input maxlength="20" name="password" type="password" placeholder="建议至少使用两种字符组合">
 			</label>
-					<div class="tips" style="color: red" th:text="${errors!=null ? (#maps.containsKey(errors, 'password]') ? errors.password : '') : ''}">
+					<div class="tips" style="color: red" th:text="${errors!=null ? (#maps.containsKey(errors, 'password') ? errors.password : '') : ''}">
 
 					</div>
 				</div>
@@ -5015,7 +5015,7 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 					<label class="other_label">确 认 密 码
 			<input maxlength="20" placeholder="请再次输入密码">
 			</label>
-					<div class="tips" style="color: red" th:text="${errors!=null ? (#maps.containsKey(errors, 'password]') ? errors.password : '') : ''}">
+					<div class="tips" style="color: red" th:text="${errors!=null ? (#maps.containsKey(errors, 'password') ? errors.password : '') : ''}">
 
 					</div>
 				</div>

@@ -15,6 +15,7 @@ import xyz.klenkiven.kmall.member.feign.CouponFeignService;
 import xyz.klenkiven.kmall.member.service.MemberService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.common.utils.R;
+import xyz.klenkiven.kmall.member.vo.MemberLoginVO;
 import xyz.klenkiven.kmall.member.vo.RegFeignVO;
 
 
@@ -60,6 +61,20 @@ public class MemberController {
         }
 
         return Result.ok();
+    }
+
+    /**
+     * [FEIGN] Member Login
+     */
+    @PostMapping("/login")
+    public Result<?> login(@RequestBody MemberLoginVO vo) {
+        MemberEntity entity = memberService.login(vo);
+        if (entity != null) {
+            return Result.ok();
+        } else {
+            return Result.error(ExceptionCodeEnum.USERNAME_PASSWORD_INVALID.getCode(),
+                    ExceptionCodeEnum.USERNAME_PASSWORD_INVALID.getMessage());
+        }
     }
 
     /**
