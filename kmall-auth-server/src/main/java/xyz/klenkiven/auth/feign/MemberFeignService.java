@@ -3,6 +3,7 @@ package xyz.klenkiven.auth.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import xyz.klenkiven.auth.model.QQAccessToken;
 import xyz.klenkiven.auth.vo.RegForm;
 import xyz.klenkiven.auth.vo.UserLoginForm;
 import xyz.klenkiven.kmall.common.utils.Result;
@@ -24,4 +25,10 @@ public interface MemberFeignService {
      */
     @PostMapping("/member/member/login")
     public Result<?> login(@RequestBody UserLoginForm form);
+
+    /**
+     * [FEIGN] Member Oauth2.0 Login
+     */
+    @PostMapping("/member/member/oauth2.0/login")
+    public Result<?> qqOauthLogin(@RequestBody QQAccessToken token);
 }

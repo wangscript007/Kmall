@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
 import xyz.klenkiven.kmall.member.entity.MemberEntity;
 import xyz.klenkiven.kmall.member.vo.MemberLoginVO;
+import xyz.klenkiven.kmall.member.vo.QQAccessToken;
 import xyz.klenkiven.kmall.member.vo.RegFeignVO;
 
 import java.util.Map;
@@ -29,5 +30,10 @@ public interface MemberService extends IService<MemberEntity> {
      * Check for members' info valid
      */
     MemberEntity login(MemberLoginVO vo);
+
+    /**
+     * QQ Login or Register
+     */
+    MemberEntity login(QQAccessToken token);
 }
 
