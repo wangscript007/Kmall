@@ -68,10 +68,10 @@ public class MemberController {
      * [FEIGN] Member Login
      */
     @PostMapping("/login")
-    public Result<?> login(@RequestBody MemberLoginVO vo) {
+    public Result<MemberEntity> login(@RequestBody MemberLoginVO vo) {
         MemberEntity entity = memberService.login(vo);
         if (entity != null) {
-            return Result.ok();
+            return Result.ok(entity);
         } else {
             return Result.error(ExceptionCodeEnum.USERNAME_PASSWORD_INVALID.getCode(),
                     ExceptionCodeEnum.USERNAME_PASSWORD_INVALID.getMessage());
@@ -82,10 +82,10 @@ public class MemberController {
      * [FEIGN] Member Oauth2.0 Login
      */
     @PostMapping("/oauth2.0/login")
-    public Result<?> oauthLogin(@RequestBody QQAccessToken token) {
+    public Result<MemberEntity> oauthLogin(@RequestBody QQAccessToken token) {
         MemberEntity entity = memberService.login(token);
         if (entity != null) {
-            return Result.ok();
+            return Result.ok(entity);
         } else {
             return Result.error(ExceptionCodeEnum.USERNAME_PASSWORD_INVALID.getCode(),
                     ExceptionCodeEnum.USERNAME_PASSWORD_INVALID.getMessage());

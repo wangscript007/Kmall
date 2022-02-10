@@ -17,8 +17,10 @@ import xyz.klenkiven.auth.vo.RegForm;
 import xyz.klenkiven.auth.vo.UserLoginForm;
 import xyz.klenkiven.kmall.common.constant.SMSConstant;
 import xyz.klenkiven.kmall.common.exception.ExceptionCodeEnum;
+import xyz.klenkiven.kmall.common.to.UserLoginTO;
 import xyz.klenkiven.kmall.common.utils.Result;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -116,7 +118,7 @@ public class LoginRegController {
 
     @PostMapping("/login")
     public String login(@Valid UserLoginForm form, BindingResult result,
-                        RedirectAttributes attributes) {
+                        RedirectAttributes attributes, HttpSession session) {
         // If form has validation errors, redirect to register page
         if (result.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -126,7 +128,7 @@ public class LoginRegController {
         }
 
         // Remote Login
-        Result<?> login = memberFeignService.login(form);
+        Result<UserLoginTO> login = memberFeignService.login(form);
         if (login.getCode().equals(ExceptionCodeEnum.USERNAME_PASSWORD_INVALID.getCode())) {
             Map<String, String> errors = new HashMap<>();
             errors.put("msg", ExceptionCodeEnum.USERNAME_PASSWORD_INVALID.getMessage());
@@ -134,7 +136,8 @@ public class LoginRegController {
             return "redirect:http://auth.kmall.com/login.html";
         }
 
-        // TODO Login Success
+        // Login Success
+        session.setAttribute("loginUser", login.getData());
         return "redirect:http://kmall.com/";
     }
 
