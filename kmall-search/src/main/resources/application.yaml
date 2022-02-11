@@ -8,6 +8,17 @@ spring:
         server-addr: 127.0.0.1:8848
   application:
     name: kmall-search
+  #Redis
+  redis:
+    host: 172.17.0.1
+    port: 6379
+  # Spring Session
+  session:
+    store-type: redis
+    timeout: 30m
+    redis:
+      flush-mode: on_save
+      namespace: spring:session
 
   thymeleaf:
     cache: false

@@ -64,10 +64,11 @@
         </b>
         <ul>
             <li>
-                <a href="#" class="li_2">你好，请登录</a>
+                <a href="http://auth.kmall.com/login.html" class="li_2" th:if="${session.loginUser == null}">你好，欢迎登录</a>
+                <a class="li_2" th:if="${session.loginUser != null}" >你好，[[${session.loginUser.nickname}]]</a>
             </li>
             <li>
-                <a href="#">免费注册</a>
+                <a href="http://auth.kmall.com/reg.html" class="li_2" th:if="${session.loginUser == null}">免费注册</a>
             </li>
             <span>|</span>
             <li>

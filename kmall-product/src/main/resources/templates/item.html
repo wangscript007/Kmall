@@ -55,8 +55,11 @@
 							</li>
 						</ul>
 						<ul class="header_ul_right">
-							<li style="border: 0;"><a href="../登录页面\index.html" class="aa">你好，请登录</a></li>
-							<li><a href="../注册页面\index.html" style="color: red;">免费注册</a> |</li>
+							<li style="border: 0;">
+								<a href="http://auth.kmall.com/login.html" class="li_2" th:if="${session.loginUser == null}">你好，欢迎登录</a>
+								<a th:if="${session.loginUser != null}" class="li_2">Hi,[[${session.loginUser.nickname}]]</a>
+							</li>
+							<li><a href="http://auth.kmall.com/reg.html" style="color: red;" th:if="${session.loginUser == null}">免费注册</a> |</li>
 							<li><a href="javascript:;" class="aa">我的订单</a> |</li>
  
 						</ul>

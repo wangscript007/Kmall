@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import xyz.klenkiven.auth.feign.MemberFeignService;
 import xyz.klenkiven.auth.feign.ThirdPartyFeignService;
+import xyz.klenkiven.auth.utils.AuthConstant;
 import xyz.klenkiven.auth.vo.RegForm;
 import xyz.klenkiven.auth.vo.UserLoginForm;
 import xyz.klenkiven.kmall.common.constant.SMSConstant;
@@ -116,6 +117,21 @@ public class LoginRegController {
         return "redirect:http://auth.kmall.com/login.html";
     }
 
+    /**
+     * User Login Page
+     */
+    @GetMapping("/login.html")
+    public String loginPage(HttpSession session) {
+        if (session != null && session.getAttribute(AuthConstant.LOGIN_USER) != null) {
+            return "redirect:http://kmall.com/";
+        } else {
+            return "login";
+        }
+    }
+
+    /**
+     * User Password Login
+     */
     @PostMapping("/login")
     public String login(@Valid UserLoginForm form, BindingResult result,
                         RedirectAttributes attributes, HttpSession session) {
@@ -137,7 +153,7 @@ public class LoginRegController {
         }
 
         // Login Success
-        session.setAttribute("loginUser", login.getData());
+        session.setAttribute(AuthConstant.LOGIN_USER, login.getData());
         return "redirect:http://kmall.com/";
     }
 
