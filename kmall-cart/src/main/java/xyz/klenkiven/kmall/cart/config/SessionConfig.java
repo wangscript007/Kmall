@@ -1,16 +1,17 @@
-package xyz.klenkiven.auth.config;
+package xyz.klenkiven.kmall.cart.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.web.servlet.FlashMapManager;
-import org.springframework.web.servlet.support.SessionFlashMapManager;
 
 @Configuration
+@EnableRedisHttpSession
 public class SessionConfig {
 
     /**
@@ -22,11 +23,6 @@ public class SessionConfig {
         cookieSerializer.setDomainName("kmall.com");
         cookieSerializer.setCookieName("KSESSION");
         return cookieSerializer;
-    }
-
-    @Bean(name = "flashMapManager")
-    public FlashMapManager flashMapManager() {
-        return new RedisSessionFlashMapManager();
     }
 
     @Bean

@@ -5,7 +5,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import xyz.klenkiven.auth.feign.MemberFeignService;
 import xyz.klenkiven.auth.feign.ThirdPartyFeignService;
-import xyz.klenkiven.auth.utils.AuthConstant;
+import xyz.klenkiven.kmall.common.constant.AuthConstant;
 import xyz.klenkiven.auth.vo.RegForm;
 import xyz.klenkiven.auth.vo.UserLoginForm;
 import xyz.klenkiven.kmall.common.constant.SMSConstant;
@@ -28,7 +27,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * Login and Register Controller

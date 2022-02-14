@@ -1,4 +1,4 @@
-package xyz.klenkiven.auth.utils;
+package xyz.klenkiven.kmall.common.constant;
 
 /**
  * Authorization Server Constant
