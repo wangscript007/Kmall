@@ -62,6 +62,12 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+        # Kmall Cart Route
+        - id: kmall_cart
+          uri: lb://kmall-cart
+          predicates:
+            - Host=cart.kmall.com
+
         # Kmall Auth Server Route
         - id: kmall_auth_server
           uri: lb://kmall-auth-server
