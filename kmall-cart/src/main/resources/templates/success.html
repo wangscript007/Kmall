@@ -26,8 +26,10 @@
 
         <ul class="hd_wrap_right">
         <li class="forel">
-        <a href="/javascript:;" class="link_login">你好,请登录</a>&nbsp;
-    <a href="/javascript:;" class="link_regist">免费注册</a>
+            <a href="http://auth.kmall.com/login.html" style="color: red;"
+               th:if="${session.loginUser == null}">你好，欢迎登录</a>
+            <a th:if="${session.loginUser != null}" >你好，[[${session.loginUser.nickname}]]</a>
+            <a href="http://auth.kmall.com/reg.html" class="link_regist" th:if="${session.loginUser == null}">免费注册</a>
         </li>
         <li class="spacer"></li>
 
@@ -60,7 +62,7 @@
     </div>
     </div>
 
-    <div class="main">
+    <div th:if="${item != null}" class="main">
 
         <div class="success-wrap">
         <div class="w" id="result">
@@ -98,6 +100,9 @@
     </div>
     </div>
 
+    </div>
+    <div th:if="${item == null}" >
+        <h2>There cannot find this item</h2>
     </div>
     </body>
     <script type="text/javascript" src="/static/cart/js/success.js"></script>
