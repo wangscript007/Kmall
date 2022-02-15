@@ -105,17 +105,17 @@
 										<p class="dj" th:text="'￥'+${#numbers.formatDecimal(cartInfo.getPrice(), 3, 2)}">4599.00</p>
 									</li>
 									<li>
-										<p>
-											<span>-</span>
-											<span th:text="${cartInfo.getCount()}">5</span>
-											<span>+</span>
+										<p th:attr="skuId=${cartInfo.getSkuId()}">
+											<span class="countOpsBtn">-</span>
+											<span class="countOpsNum" th:text="${cartInfo.getCount()}">5</span>
+											<span class="countOpsBtn">+</span>
 										</p>
 									</li>
 									<li style="font-weight:bold">
 										<p class="zj" th:text="'￥'+${#numbers.formatDecimal(cartInfo.getPrice(), 3, 2)}">￥22995.00</p>
 									</li>
 									<li>
-										<p>删除</p>
+										<p class="deleteItemBtn" th:attr="skuId=${cartInfo.getSkuId()}">删除</p>
 									</li>
 								</ol>
 							</div>
@@ -205,7 +205,7 @@
 				</dl>
 			</div>
 			<div>
-				<button type="button">删除</button>
+				<button type="button" onclick="deleteItem()">删除</button>
 
 			</div>
 		</div>
@@ -801,7 +801,22 @@
 		$(".item-check").click(function () {
 			var skuId = $(this).attr("skuId");
 			var check = $(this).prop("checked");
-			window.location.href = "http://item.kmall.com/checkItem?skuId=" + skuId + "&check=" + (check?1:0);
+			window.location.href = "http://cart.kmall.com/checkItem?skuId=" + skuId + "&check=" + (check?1:0);
 		})
+
+		$(".countOpsBtn").click(function () {
+			var skuId = $(this).parent().attr("skuId");
+			var countNum = $(this).parent().find(".countOpsNum").text();
+			window.location.href = "http://cart.kmall.com/countItem?skuId=" + skuId + "&count=" + countNum;
+		})
+
+		var deleteId = 0;
+		function deleteItem() {
+			window.location.href = "http://cart.kmall.com/deleteItem?skuId=" + deleteId;
+		}
+
+		$(".deleteItemBtn").click(function () {
+			deleteId = $(this).attr("skuId");
+		});
 	</script>
 </html>

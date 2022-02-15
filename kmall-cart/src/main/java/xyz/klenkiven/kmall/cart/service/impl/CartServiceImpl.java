@@ -104,6 +104,28 @@ public class CartServiceImpl implements CartService {
         return cart;
     }
 
+    @Override
+    public void checkItem(Long skuId, Integer isChecked) {
+        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
+        CartItemVO cartItem = getCartItem(skuId);
+        cartItem.setCheck(isChecked == 1);
+        cartOps.put(skuId.toString(), JSON.toJSONString(cartItem));
+    }
+
+    @Override
+    public void countItem(Long skuId, Integer count) {
+        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
+        CartItemVO cartItem = getCartItem(skuId);
+        cartItem.setCount(count);
+        cartOps.put(skuId.toString(), JSON.toJSONString(cartItem));
+    }
+
+    @Override
+    public void deleteItem(Long skuId) {
+        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
+        cartOps.delete(skuId.toString());
+    }
+
     /**
      * If Item is not in this cart, get SKU info
      * @param num item count

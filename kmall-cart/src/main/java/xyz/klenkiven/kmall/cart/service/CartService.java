@@ -36,4 +36,23 @@ public interface CartService {
      */
     CartVO getCart();
 
+    /**
+     * Change Item Select State
+     * @param skuId sku Id
+     * @param isChecked is checked
+     */
+    void checkItem(Long skuId, Integer isChecked);
+
+    /**
+     * Change Item Count
+     * @param skuId sku Id
+     * @param count item new count
+     */
+    void countItem(Long skuId, Integer count);
+
+    /**
+     * Delete Cart Item
+     * @param skuId sku Id
+     */
+    void deleteItem(Long skuId);
 }
