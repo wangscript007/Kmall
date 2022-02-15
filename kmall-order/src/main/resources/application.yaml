@@ -16,6 +16,14 @@ spring:
   application:
     name: kmall-order
 
+  # RabbitMQ
+  rabbitmq:
+    host: 172.17.0.1
+    port: 5672
+    virtual-host: /
+    username: guest
+    password: guest
+
 #mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
