@@ -20,10 +20,10 @@ public class ItemController {
 
     @GetMapping("/{skuId}.html")
     public String skuItem(@PathVariable Long skuId, Model model) {
-        System.out.println("Sku Id is " + skuId);
+        // System.out.println("Sku Id is " + skuId);
         SkuItemVO vo =  skuInfoService.item(skuId);
         model.addAttribute("item", vo);
-        System.out.println("SKU Info: " + skuId + ", SKU Info: " + vo);
+        System.out.println("SKU Info: " + vo.getInfo());
         return "item";
     }
 

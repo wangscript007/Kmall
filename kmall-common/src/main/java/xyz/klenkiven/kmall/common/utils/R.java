@@ -1,8 +1,13 @@
 package xyz.klenkiven.kmall.common.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpStatus;
 import xyz.klenkiven.kmall.common.exception.ExceptionCodeEnum;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +18,7 @@ import java.util.Map;
  */
 public class R extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
+	private static final transient ObjectMapper objectMapper = new ObjectMapper();
 	
 	public R() {
 		put("code", 0);
@@ -56,6 +62,15 @@ public class R extends HashMap<String, Object> {
 
 	public int getCode() {
 		return (Integer) getOrDefault("code", 0);
+	}
+
+	public <T> T getData(String key, TypeReference<T> typeReference) {
+		try {
+			String s = objectMapper.writeValueAsString(get(key));
+			return objectMapper.readValue(s, typeReference);
+		} catch (JsonProcessingException e) {
+			return null;
+		}
 	}
 
 	@Override

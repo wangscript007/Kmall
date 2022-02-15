@@ -17,13 +17,14 @@ import xyz.klenkiven.kmall.product.vo.SkuItemVO;
 
 
 @Service("skuSaleAttrValueService")
-public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao, SkuSaleAttrValueEntity> implements SkuSaleAttrValueService {
+public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao, SkuSaleAttrValueEntity>
+        implements SkuSaleAttrValueService {
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<SkuSaleAttrValueEntity> page = this.page(
                 new Query<SkuSaleAttrValueEntity>().getPage(params),
-                new QueryWrapper<SkuSaleAttrValueEntity>()
+                new QueryWrapper<>()
         );
 
         return new PageUtils(page);
@@ -33,6 +34,11 @@ public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao
     public List<SkuItemVO.SkuItemSaleAttrVO> getSaleAttr(Long spuId) {
         SkuSaleAttrValueDao skuSaleAttrValueDao = this.baseMapper;
         return skuSaleAttrValueDao.getSaleAttr(spuId);
+    }
+
+    @Override
+    public List<String> getSkuSaleAttrStringList(Long skuId) {
+        return baseMapper.getSkuSaleAttrStringList(skuId);
     }
 
 }

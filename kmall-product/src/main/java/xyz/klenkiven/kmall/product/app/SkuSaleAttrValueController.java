@@ -1,15 +1,13 @@
 package xyz.klenkiven.kmall.product.app;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import xyz.klenkiven.kmall.common.utils.Result;
 import xyz.klenkiven.kmall.product.entity.SkuSaleAttrValueEntity;
 import xyz.klenkiven.kmall.product.service.SkuSaleAttrValueService;
 import xyz.klenkiven.kmall.common.utils.PageUtils;
@@ -51,6 +49,15 @@ public class SkuSaleAttrValueController {
 		SkuSaleAttrValueEntity skuSaleAttrValue = skuSaleAttrValueService.getById(id);
 
         return R.ok().put("skuSaleAttrValue", skuSaleAttrValue);
+    }
+
+    /**
+     * Get SKU Sale Attribute as List
+     */
+    @GetMapping("/stringList/{skuId}")
+    public Result<List<String>> skuSaleAttrStringList(@PathVariable Long skuId) {
+        List<String> list = skuSaleAttrValueService.getSkuSaleAttrStringList(skuId);
+        return Result.ok(list);
     }
 
     /**
